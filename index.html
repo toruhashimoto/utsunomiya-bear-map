@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>宇都宮市 クマ出没マップ・推論分析｜市民作成（非公式）</title>
-<meta name="description" content="宇都宮市が公開するクマ目撃情報を地図化し、時刻と位置から個体数（1頭か2頭か）を分析する市民作成の非公式マップ。新しい目撃情報を追加して再評価できます。" />
+<meta name="description" content="宇都宮市が公開するクマ目撃情報を地図化し、時刻と位置から個体数（1頭か2頭か）を推論する市民作成の非公式マップ。定期的に最新情報へ自動更新。" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <style>
@@ -245,13 +245,12 @@ function renderLegend(){
   if(hypo==="one"){
     L1.innerHTML=
       `<span class="key"><span class="dot" style="background:#0e7c66"></span>1頭のクマの推定経路（最有力）</span>`+
-      `<span class="key"><span class="dot" style="background:var(--user)"></span>追加した目撃（あなたの入力）</span>`+
       `<span class="key">番号＝時系列の順番（点線＝推定移動経路）</span>`;
   }else{
     L1.innerHTML=
       `<span class="key"><span class="dot" style="background:${ANALYSIS.bears.A.color}"></span>クマA：${ANALYSIS.bears.A.label}</span>`+
       `<span class="key"><span class="dot" style="background:${ANALYSIS.bears.B.color}"></span>クマB：${ANALYSIS.bears.B.label}</span>`+
-      `<span class="key"><span class="dot" style="background:var(--user)"></span>追加した目撃</span>`;
+      `<span class="key">番号＝時系列の順番</span>`;
   }
 }
 

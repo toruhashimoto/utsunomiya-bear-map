@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>宇都宮市 クマ出没マップ・推論分析｜市民作成（非公式）</title>
+<meta name="description" content="宇都宮市が公開するクマ目撃情報を地図化し、時刻と位置から個体数（1頭か2頭か）を分析する市民作成の非公式マップ。新しい目撃情報を追加して再評価できます。" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<style>
+  :root{
+    --bearA:#d7263d; --bearB:#1763b8; --one:#8a5a2b; --user:#7b2ff7;
+    --ink:#1a1a1a; --muted:#5b6470; --line:#e3e7ec; --bg:#f4f6f9;
+    --warn:#b8860b; --warnbg:#fff8e6; --danger:#b00020;
+    --cardradius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,-apple-system,sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.6;-webkit-text-size-adjust:100%}
+  a{color:#1763b8}
+  header.app{background:linear-gradient(135deg,#2b2118,#4a3826);color:#fff;padding:14px 16px 16px}
+  header.app h1{margin:0;font-size:1.22rem;letter-spacing:.02em}
+  header.app .sub{margin-top:4px;font-size:.82rem;color:#f0e2cf;opacity:.95}
+  .ribbon{display:inline-block;background:var(--danger);color:#fff;font-weight:700;font-size:.72rem;
+    padding:2px 8px;border-radius:999px;margin-right:8px;vertical-align:middle}
+  .wrap{max-width:1080px;margin:0 auto;padding:14px}
+  .grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:880px){.grid{grid-template-columns:1.55fr 1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--cardradius);
+    box-shadow:0 1px 3px rgba(20,30,50,.05);overflow:hidden}
+  .card h2{font-size:1.0rem;margin:0;padding:12px 14px;border-bottom:1px solid var(--line);background:#fbfcfd}
+  .card .body{padding:12px 14px}
+  #map{height:60vh;min-height:420px;width:100%;background:#dfe6ea}
+  @media(min-width:880px){#map{height:560px}}
+  .mapcard{padding:0}
+  .controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:#fbfcfd}
+  .controls button{border:1px solid #c9d2dc;background:#fff;border-radius:8px;padding:6px 12px;font-size:.85rem;cursor:pointer}
+  .controls button.primary{background:#2b2118;color:#fff;border-color:#2b2118}
+  .controls input[type=range]{flex:1;min-width:120px;accent-color:#2b2118}
+  .clock{font-variant-numeric:tabular-nums;font-weight:700;font-size:.85rem;min-width:120px}
+  .seg{display:inline-flex;border:1px solid #c9d2dc;border-radius:8px;overflow:hidden}
+  .seg button{border:0;border-radius:0;background:#fff;padding:6px 10px;font-size:.82rem}
+  .seg button.on{background:#2b2118;color:#fff}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.82rem;padding:8px 12px;border-top:1px solid var(--line)}
+  .legend .key{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid #fff;box-shadow:0 0 0 1px #888}
+  .badge-num{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;
+    color:#fff;font-weight:700;font-size:.72rem;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .verdict{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 6px}
+  .vb{font-weight:800;font-size:.78rem;padding:3px 10px;border-radius:999px;color:#fff;background:var(--one)}
+  .prob{display:flex;height:26px;border-radius:8px;overflow:hidden;border:1px solid var(--line);margin:6px 0 4px;font-size:.72rem}
+  .prob > div{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;white-space:nowrap}
+  .evi{margin:6px 0 0;padding-left:1.1em}
+  .evi li{margin:5px 0}
+  .pill{display:inline-block;font-size:.72rem;padding:1px 8px;border-radius:999px;border:1px solid currentColor}
+  .pA{color:var(--bearA)} .pB{color:var(--bearB)} .pOne{color:var(--one)}
+  .narr{border-left:4px solid var(--line);padding:6px 0 6px 10px;margin:8px 0}
+  .narr.A{border-color:var(--bearA)} .narr.B{border-color:var(--bearB)} .narr.one{border-color:var(--one)}
+  .caveat{background:var(--warnbg);border:1px solid #f0e2bf;border-radius:10px;padding:10px;font-size:.84rem;margin-top:10px}
+  .tight{background:#eef3fb;border:1px solid #d3e0f2;border-radius:10px;padding:9px;font-size:.83rem;margin-top:8px}
+  label.fld{display:block;font-size:.8rem;color:var(--muted);margin:8px 0 2px}
+  input[type=text],input[type=date],input[type=time],textarea,select{width:100%;padding:8px;border:1px solid #c9d2dc;border-radius:8px;font:inherit}
+  .row{display:flex;gap:8px}.row>*{flex:1}
+  .btnrow{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .btn{border:1px solid #c9d2dc;background:#fff;border-radius:8px;padding:8px 12px;cursor:pointer;font:inherit}
+  .btn.primary{background:#1763b8;color:#fff;border-color:#1763b8}
+  .btn.ghost{background:#fff}
+  .hint{font-size:.78rem;color:var(--muted)}
+  .result{margin-top:10px;padding:10px;border-radius:10px;font-size:.86rem;display:none}
+  .result.show{display:block}
+  .result.ok{background:#eef7ee;border:1px solid #cfe8cf}
+  .result.maybe{background:#fff8e6;border:1px solid #f0e2bf}
+  .result.new{background:#fdecec;border:1px solid #f3c9c9}
+  ul.tasks{list-style:none;margin:0;padding:0}
+  ul.tasks li{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed var(--line)}
+  ul.tasks li:last-child{border-bottom:0}
+  ul.tasks input{margin-top:4px;width:18px;height:18px;accent-color:#1763b8}
+  ul.tasks label{font-size:.88rem}
+  .done label{text-decoration:line-through;color:var(--muted)}
+  .ulist{font-size:.84rem;margin:6px 0;padding-left:1.1em}
+  .added{font-size:.82rem;border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin-top:6px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+  .added small{color:var(--muted)}
+  .delx{border:0;background:#f3d6d6;color:#a11;border-radius:6px;padding:2px 8px;cursor:pointer}
+  .safety{font-size:.86rem}
+  .safety .tel{font-weight:700}
+  .foot{font-size:.76rem;color:var(--muted);padding:14px;text-align:center}
+  .disc{background:#fff8e6;border:1px solid #f0e2bf;border-radius:10px;padding:10px;font-size:.8rem;margin:12px 0}
+  details summary{cursor:pointer;font-weight:600;font-size:.9rem}
+  .kv{font-size:.82rem;color:var(--muted)}
+  .leaflet-popup-content{font-size:.85rem;line-height:1.5}
+  .pop-t{font-weight:700;margin-bottom:2px}
+  .tag{display:inline-block;font-size:.7rem;color:#fff;padding:1px 7px;border-radius:999px;font-weight:700}
+</style>
+</head>
+<body>
+<header class="app">
+  <h1>🐻 宇都宮市 クマ出没マップ・推論分析</h1>
+  <div class="sub"><span class="ribbon">注意</span>市公開の目撃情報（令和8年6月8日時点・全13件）を地図化し、時刻と位置から<b>個体数（1頭か2頭か）</b>を多角的に分析。市民が作成した<b>非公式</b>のツールです。</div>
+</header>
+
+<div class="wrap">
+  <div class="disc">
+    ⚠️ <b>これは公式情報ではありません。</b>宇都宮市が公開する目撃情報をもとに、一市民が時刻・位置を分析・可視化したものです。
+    最新・正確な情報は必ず <a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市公式サイト</a> をご確認ください。
+    クマは危険です。<b>小中学校は6月8日(月)・9日(火)は休校</b>。屋外では十分にご注意ください。
+  </div>
+
+  <div class="grid">
+    <!-- LEFT: MAP -->
+    <div class="card mapcard">
+      <div id="map"></div>
+      <div class="controls">
+        <span class="seg" id="hypoSeg">
+          <button data-h="one" class="on">🐻×1 1頭仮説</button>
+          <button data-h="two">🐻×2 2頭仮説</button>
+        </span>
+        <button id="playBtn" class="primary">▶ 再生</button>
+        <button id="resetBtn">⟲ 全表示</button>
+        <input type="range" id="timeline" min="0" max="100" value="100" />
+        <span class="clock" id="clock">全期間を表示</span>
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <!-- RIGHT: ANALYSIS + TOOLS -->
+    <div class="grid" style="grid-template-columns:1fr;gap:14px">
+      <div class="card">
+        <h2>🧭 推論：クマは何匹か</h2>
+        <div class="body" id="analysisBody"></div>
+      </div>
+
+      <div class="card">
+        <h2>➕ 新しい目撃情報を追加（自動再評価）</h2>
+        <div class="body">
+          <p class="hint">市の更新で新しい目撃が出たら、ここに入力すると「既知のクマの動きで説明できるか／<b>別の個体</b>の可能性か」を自動判定します。位置は<b>地図をクリック</b>して指定できます。</p>
+          <div class="row">
+            <div><label class="fld">日付</label><input type="date" id="nDate" value="2026-06-09" /></div>
+            <div><label class="fld">時刻</label><input type="time" id="nTime" value="06:00" /></div>
+          </div>
+          <label class="fld">場所メモ（任意）</label>
+          <input type="text" id="nNote" placeholder="例）西川田町 ○○付近" />
+          <div class="row">
+            <div><label class="fld">緯度 lat</label><input type="text" id="nLat" placeholder="地図クリックで自動入力" /></div>
+            <div><label class="fld">経度 lon</label><input type="text" id="nLon" placeholder="同上" /></div>
+          </div>
+          <div class="btnrow">
+            <button class="btn primary" id="addBtn">追加して判定</button>
+            <button class="btn ghost" id="pickBtn">📍 地図で位置を選ぶ</button>
+          </div>
+          <div class="result" id="addResult"></div>
+          <div id="addedList"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>✅ 更新タスク（チェックリスト）</h2>
+        <div class="body">
+          <ul class="tasks" id="taskList"></ul>
+          <p class="hint" style="margin-top:8px">チェック状態はこの端末に保存されます。次の確認の前にリセット → <button class="btn ghost" id="resetTasks" style="padding:3px 8px">タスクを未完了に戻す</button></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>🆘 安全のために</h2>
+        <div class="body safety">
+          <p><b>通報・相談先</b><br>
+          ・平日 8:30–17:15：森林管理・鳥獣対策グループ <span class="tel">028-632-2477</span><br>
+          ・夜間・休日：コールセンター <span class="tel">028-632-2222</span><br>
+          ・<b>身の危険を感じたら 110番</b></p>
+          <p id="safetyNote" style="margin:8px 0 0"></p>
+          <details style="margin-top:8px">
+            <summary>クマに出会わない・出会ったときの行動</summary>
+            <ul class="ulist">
+              <li>早朝・夕方〜夜は外出を控える（クマが活発な時間帯）。</li>
+              <li>音（鈴・ラジオ・声）で人の存在を知らせ、出会い頭を避ける。</li>
+              <li>生ゴミ・果実・収穫物を屋外に放置しない（誘引源）。</li>
+              <li>子グマを見ても近づかない。近くに母グマがいて非常に危険。</li>
+              <li>出会ったら走って背を向けない。ゆっくり後退して距離をとる。</li>
+              <li>登下校・通学路では複数人で行動し、暗い時間を避ける。</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    データ出典：<a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市「クマの出没にご注意ください」</a>（令和8年6月8日時点、全13件）。
+    地図：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a> / © OpenStreetMap contributors。
+    座標は目撃地点の推定値（ランドマーク＋記載方向・距離から算出）であり誤差を含みます。<br>
+    本ツールは市民による非公式の分析・可視化です。分析手法：全13地点を時系列で結び、各区間の所要時間と距離からクマの移動可能速度（小走り約8〜10km/h）を超えるか、同時刻に離れた2地点の矛盾がないかを多角的に検証。<span id="genstamp"></span>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+/* ============================================================
+   宇都宮市クマ出没 — データ（市公式の目撃情報を地理院/OSMで地理座標化）
+   座標は目撃地点の推定値。bear: 2匹仮説での個体割当（A=北部・中央南回廊 / B=姿川・西川田）
+   ============================================================ */
+const SIGHTINGS = [
+  {id:1,  dt:"2026-06-06 18:30", area:"富士見が丘1丁目", place:"長岡公園から南東250m付近",            lat:36.5869, lon:139.8807, bear:"A"},
+  {id:2,  dt:"2026-06-06 21:10", area:"上大曽町",         place:"中央消防署(消防本部)から北西350m付近", lat:36.5746, lon:139.8869, bear:"A"},
+  {id:3,  dt:"2026-06-07 01:14", area:"塙田1丁目",        place:"栃木県立図書館付近",                  lat:36.5652, lon:139.8855, bear:"A"},
+  {id:4,  dt:"2026-06-07 05:08", area:"明保野町",         place:"明保野公園内",                        lat:36.5459, lon:139.8682, bear:"A"},
+  {id:5,  dt:"2026-06-07 05:15", area:"大塚町",           place:"宇都宮高校から南300m付近",            lat:36.5385, lon:139.8628, bear:"A"},
+  {id:6,  dt:"2026-06-07 05:30", area:"西川田町",         place:"姿川中学校から北100m付近",            lat:36.5368, lon:139.8561, bear:"B"},
+  {id:7,  dt:"2026-06-07 15:58", area:"西川田町",         place:"姿川中学校 校庭",                     lat:36.5360, lon:139.8561, bear:"B"},
+  {id:8,  dt:"2026-06-07 16:40", area:"西川田町",         place:"たいらや(姿川店)から南150m付近",       lat:36.5343, lon:139.8526, bear:"B"},
+  {id:9,  dt:"2026-06-07 20:30", area:"西川田町",         place:"姿川中学校から南300m付近",            lat:36.5332, lon:139.8561, bear:"B"},
+  {id:10, dt:"2026-06-07 23:50", area:"西川田町",         place:"姿川地区市民センターから東500m付近",   lat:36.5295, lon:139.8546, bear:"B"},
+  {id:11, dt:"2026-06-08 03:20", area:"簗瀬町",           place:"中央卸売市場から西100m付近",          lat:36.5463, lon:139.8913, bear:"A"},
+  {id:12, dt:"2026-06-08 04:25", area:"陽南1丁目",        place:"陽南中学校から北東500m付近",          lat:36.5382, lon:139.8805, bear:"A"},
+  {id:13, dt:"2026-06-08 18:55", area:"陽南2丁目",        place:"陽南中学校の東側",                    lat:36.5350, lon:139.8782, bear:"A"},
+];
+
+/* 推論結果（独立した4分析＋3反証＋統合の結論）。 */
+const ANALYSIS = {
+  headline: "13件の目撃は、1頭のクマが夜間に市内を移動した経路として最も無理なく説明できます。2頭の可能性も残りますが、複数頭を断定する決定的証拠（同時刻・遠隔の目撃や、母子が一緒に写った記録）はありません。",
+  prob: { one: 0.62, two: 0.33, threePlus: 0.05 },
+  oneBearNarr: "6/6夕方に市北部（富士見が丘・長岡）に現れ、上大曽→塙田（県立図書館）と南下。未明に市街地を縦断して明保野・大塚を抜け、明け方に姿川・西川田へ。6/7の日中は姿川中付近で約10.5時間ほぼ静止して休息し、夜間に簗瀬へ移動、6/8は陽南で約14.5時間休息。総移動は約48時間で13.5km・平均時速0.28kmと、1頭の行動圏（約22平方km）に収まります。",
+  bears: {
+    A: { label:"北部・中央南回廊の個体", color:"#d7263d",
+         narr:"富士見が丘から夜間に南下し、塙田・図書館付近を経て明保野・大塚へと市街地を縦断。その後6/8には簗瀬・陽南の中央南エリアに現れ、陽南中学校付近に滞在。移動はすべて夕方〜早朝の暗い時間帯に集中。" },
+    B: { label:"姿川・西川田の個体", color:"#1763b8",
+         narr:"6/7の早朝から深夜まで、姿川中学校を中心とした半径約0.8kmの狭い範囲（西川田・姿川地区）に約18時間とどまり続けた。日中はほとんど動かず、身を潜めて休息・採食したとみられる定着型の動き。" }
+  },
+  evidence: [
+    "全13地点を時刻順につなぐと、どの区間も最速で<b>時速8.2km（明保野→大塚の7分間のみ）</b>、他はすべて時速2.5km以下。クマの通常の歩み・小走りの範囲に完全に収まり、1頭でも物理的に無理がありません。",
+    "<b>同時刻に遠く離れた2か所</b>で目撃された組み合わせは1つもありません。北部→南西→中央南の3エリアは時間的に重ならず順番に出現しており、これは1頭が移動していった足跡と一致します。",
+    "行動リズムが典型的なツキノワグマです。移動は夕方・夜・明け方に集中し、日中は2回の長い休息（6/7昼に約10.5時間、6/8昼に約14.5時間ほぼ静止）を挟んでいます。",
+    "<b>2頭説の根拠</b>：南西の姿川・西川田に約18時間居座った密集（地点6〜10、半径約0.8km）を『定着した別個体』と読めば、北部から来た移動個体との2頭構成も成立します。ただし両者の境目（地点5→6）は徒歩で移動できる距離・時間で、決め手にはなりません。",
+    "<b>母グマ＋子グマ</b>が一緒に動いた場合、点の目撃データでは1頭と区別できません。6月は子連れ・分散の時期で、実際の頭数が2頭以上の可能性は否定しきれません。"
+  ],
+  tightest: "全データ中で最も速い区間は 地点4(明保野 6/7 05:08) → 地点5(大塚 05:15)＝<b>0.95kmを7分＝時速8.2km</b>。クマの小走りの範囲内なので1頭でも超えられますが、これが唯一の『速い・直線的』な動きで、2頭説を唱えるならここが継ぎ目として指摘されます。",
+  caveats: [
+    "点の目撃座標・時刻からは『1頭』と『母子・複数頭が一緒に移動』を区別できません。1頭と断定はできず、最も確からしい推定にとどまります。",
+    "地点4→5の時速8.2kmは座標や時刻に多少の誤差があると変動します。それでもクマの走行速度の範囲内で、不可能ではありません。",
+    "目撃の隙間（特に地点10→11の夜間移動 約3.8km）には別個体が隠れている可能性が原理的に常に残ります。",
+    "確定には、複数個体が同一画面に写った映像、DNA・フンの鑑定、または同時刻の遠隔2地点での目撃のいずれかが必要です。"
+  ],
+  safety: "6/8〜6/9は学校が休校です。クマは特に夕方から早朝（暗い時間帯）に活動するため、その時間帯の外出・単独行動は避けてください。子どもだけの外出を控え、屋外では鈴やラジオで音を出し、生ゴミや果実を屋外に放置しないこと。クマを見かけても近づかず刺激せず、静かにその場を離れ、すぐに警察(110)か市役所へ通報してください。特に<b>南西の姿川・西川田</b>地区、および<b>中央南の陽南・簗瀬</b>地区にご注意ください。"
+};
+const BEARMAXKMH = 8;    // クマが無理なく持続できるおおよその速度（早足）
+const BEARRUSHKMH = 15;  // 急げば出せる速度の目安（これを超える＝別個体を疑う）
+
+/* ===================== utils ===================== */
+function parseDT(s){ const [d,t]=s.split(" "); const [Y,M,D]=d.split("-").map(Number); const [h,mi]=t.split(":").map(Number); return new Date(Y,M-1,D,h,mi).getTime(); }
+function fmtDT(ms){ const d=new Date(ms); const w=["日","月","火","水","木","金","土"][d.getDay()];
+  return `${d.getMonth()+1}/${d.getDate()}(${w}) ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`; }
+function haversine(a,b,c,d){ const R=6371000,toR=x=>x*Math.PI/180; const dLat=toR(c-a),dLon=toR(d-b);
+  const s=Math.sin(dLat/2)**2+Math.cos(toR(a))*Math.cos(toR(c))*Math.sin(dLon/2)**2; return 2*R*Math.asin(Math.sqrt(s)); }
+
+SIGHTINGS.forEach(s=>s.t=parseDT(s.dt));
+const T0=Math.min(...SIGHTINGS.map(s=>s.t)), T1=Math.max(...SIGHTINGS.map(s=>s.t));
+
+/* ===================== map ===================== */
+const map=L.map("map",{scrollWheelZoom:true}).setView([36.553,139.873],13);
+const gsiPale=L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",{attribution:"地理院タイル（淡色）",maxZoom:18});
+const gsiStd=L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",{attribution:"地理院タイル（標準）",maxZoom:18});
+const osm=L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap contributors",maxZoom:19});
+gsiPale.addTo(map);
+L.control.layers({"地理院 淡色":gsiPale,"地理院 標準":gsiStd,"OpenStreetMap":osm},null,{position:"topright"}).addTo(map);
+
+let hypo="one"; // "one" | "two"
+function numIcon(s){ const c=hypo==="one"?"#8a5a2b":(s.bear==="A"?ANALYSIS.bears.A.color:ANALYSIS.bears.B.color);
+  return L.divIcon({className:"",html:`<div class="badge-num" style="background:${c}">${s.id}</div>`,iconSize:[24,24],iconAnchor:[12,12]}); }
+
+let markerObjs=[], pathLayers=[];
+function clearMap(){ markerObjs.forEach(m=>map.removeLayer(m)); markerObjs=[]; pathLayers.forEach(p=>map.removeLayer(p)); pathLayers=[]; }
+function draw(frac){
+  clearMap();
+  const cut = frac>=1 ? Infinity : T0+(T1-T0)*frac;
+  // paths
+  if(hypo==="one"){
+    const pts=SIGHTINGS.filter(s=>s.t<=cut).sort((x,y)=>x.t-y.t).map(s=>[s.lat,s.lon]);
+    if(pts.length>1) pathLayers.push(L.polyline(pts,{color:"#8a5a2b",weight:3,opacity:.8,dashArray:"7,7"}).addTo(map));
+  }else{
+    ["A","B"].forEach(b=>{
+      const col=b==="A"?ANALYSIS.bears.A.color:ANALYSIS.bears.B.color;
+      const pts=SIGHTINGS.filter(s=>s.bear===b&&s.t<=cut).sort((x,y)=>x.t-y.t).map(s=>[s.lat,s.lon]);
+      if(pts.length>1) pathLayers.push(L.polyline(pts,{color:col,weight:3,opacity:.75,dashArray:"7,7"}).addTo(map));
+    });
+  }
+  // markers
+  SIGHTINGS.forEach(s=>{
+    if(s.t>cut) return;
+    const m=L.marker([s.lat,s.lon],{icon:numIcon(s)});
+    const tag = hypo==="two" ? `<span class="tag" style="background:${s.bear==="A"?ANALYSIS.bears.A.color:ANALYSIS.bears.B.color}">クマ${s.bear}</span>` : "";
+    m.bindPopup(`<div class="pop-t">#${s.id}　${fmtDT(s.t)} ${tag}</div>${s.area}<br>${s.place}<br><span class="kv">(${s.lat}, ${s.lon})</span>`);
+    m.addTo(map); markerObjs.push(m);
+  });
+  document.getElementById("clock").textContent = frac>=1 ? "全期間を表示" : "〜 "+fmtDT(cut);
+}
+
+/* ===================== legend ===================== */
+function renderLegend(){
+  const L1=document.getElementById("legend");
+  if(hypo==="one"){
+    L1.innerHTML=
+      `<span class="key"><span class="dot" style="background:#8a5a2b"></span>1頭のクマの推定経路（最有力）</span>`+
+      `<span class="key"><span class="dot" style="background:var(--user)"></span>追加した目撃（あなたの入力）</span>`+
+      `<span class="key">番号＝時系列の順番（点線＝推定移動経路）</span>`;
+  }else{
+    L1.innerHTML=
+      `<span class="key"><span class="dot" style="background:${ANALYSIS.bears.A.color}"></span>クマA：${ANALYSIS.bears.A.label}</span>`+
+      `<span class="key"><span class="dot" style="background:${ANALYSIS.bears.B.color}"></span>クマB：${ANALYSIS.bears.B.label}</span>`+
+      `<span class="key"><span class="dot" style="background:var(--user)"></span>追加した目撃</span>`;
+  }
+}
+
+map.whenReady(()=>{ map.fitBounds(L.latLngBounds(SIGHTINGS.map(s=>[s.lat,s.lon])).pad(0.12)); });
+draw(1); renderLegend();
+
+/* ===================== hypothesis toggle ===================== */
+document.getElementById("hypoSeg").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b)return;
+  hypo=b.dataset.h;
+  [...document.querySelectorAll("#hypoSeg button")].forEach(x=>x.classList.toggle("on",x.dataset.h===hypo));
+  draw(document.getElementById("timeline").value/100); renderLegend(); drawAdded();
+});
+
+/* ===================== timeline animation ===================== */
+const tl=document.getElementById("timeline");
+let playing=false, timer=null;
+tl.addEventListener("input",()=>{ stop(); draw(tl.value/100); });
+function stepFrame(){ let v=+tl.value+0.7; if(v>=100){v=100; stop();} tl.value=v; draw(v/100); }
+function play(){ if(+tl.value>=100){tl.value=0;} playing=true; document.getElementById("playBtn").textContent="⏸ 停止"; timer=setInterval(stepFrame,90); }
+function stop(){ playing=false; document.getElementById("playBtn").textContent="▶ 再生"; if(timer)clearInterval(timer); }
+document.getElementById("playBtn").addEventListener("click",()=>{ playing?stop():play(); });
+document.getElementById("resetBtn").addEventListener("click",()=>{ stop(); tl.value=100; draw(1); });
+
+/* ===================== analysis panel ===================== */
+(function renderAnalysis(){
+  const a=ANALYSIS, p=a.prob, pct=x=>Math.round(x*100);
+  document.getElementById("analysisBody").innerHTML=`
+    <div class="verdict"><span class="vb">最有力：1頭（${pct(p.one)}%）</span><span class="kv">2頭 ${pct(p.two)}% ／ 3頭以上 ${pct(p.threePlus)}%</span></div>
+    <p style="margin:2px 0 8px"><b>${a.headline}</b></p>
+    <div class="prob">
+      <div style="width:${pct(p.one)}%;background:#8a5a2b" title="1頭">${pct(p.one)}% 1頭</div>
+      <div style="width:${pct(p.two)}%;background:#2b7a2b" title="2頭">${pct(p.two)}% 2頭</div>
+      <div style="width:${pct(p.threePlus)}%;background:#b8860b" title="3頭以上">${pct(p.threePlus)}%</div>
+    </div>
+    <p class="hint">地図左上の切替で<b>「1頭仮説」「2頭仮説」</b>の見え方を比較できます。</p>
+
+    <div class="narr one"><span class="pill pOne">1頭仮説（最有力）</span><br>${a.oneBearNarr}</div>
+    <details>
+      <summary>2頭仮説（あなたの予想・${pct(p.two)}%）の内訳を見る</summary>
+      <div class="narr A"><span class="pill pA">クマA</span> <b>${a.bears.A.label}</b><br>${a.bears.A.narr}</div>
+      <div class="narr B"><span class="pill pB">クマB</span> <b>${a.bears.B.label}</b><br>${a.bears.B.narr}</div>
+    </details>
+
+    <div class="kv" style="margin-top:8px">時刻と位置からわかること（証拠）</div>
+    <ol class="evi">${a.evidence.map(e=>`<li>${e}</li>`).join("")}</ol>
+    <div class="tight"><b>最も判断が分かれる区間</b><br>${a.tightest}</div>
+    <div class="caveat"><b>正直な留保（断定しないこと）</b><ul class="ulist" style="margin:4px 0">${a.caveats.map(c=>`<li>${c}</li>`).join("")}</ul></div>`;
+  document.getElementById("safetyNote").innerHTML=a.safety;
+})();
+
+/* ===================== add-sighting tool (localStorage) ===================== */
+const LS_ADD="utsuBear_added_v2", LS_TASK="utsuBear_tasks_v2";
+let picking=false;
+const userLayer=L.layerGroup().addTo(map);
+function loadAdded(){ try{return JSON.parse(localStorage.getItem(LS_ADD))||[]}catch(e){return[]} }
+function saveAdded(a){ localStorage.setItem(LS_ADD,JSON.stringify(a)); }
+
+map.on("click",e=>{
+  if(!picking)return;
+  document.getElementById("nLat").value=e.latlng.lat.toFixed(5);
+  document.getElementById("nLon").value=e.latlng.lng.toFixed(5);
+  picking=false; document.getElementById("pickBtn").textContent="📍 地図で位置を選ぶ";
+});
+document.getElementById("pickBtn").addEventListener("click",()=>{
+  picking=!picking;
+  document.getElementById("pickBtn").textContent=picking?"地図をクリックしてください…":"📍 地図で位置を選ぶ";
+});
+
+// 全目撃（公式＋追加）から、新地点の前後の時刻近接点への必要速度と、同時刻矛盾を評価
+function evalNew(lat,lon,t){
+  const all=SIGHTINGS.map(s=>({lat:s.lat,lon:s.lon,t:s.t,label:"#"+s.id}))
+    .concat(loadAdded().filter(x=>x.t!==t).map((x,i)=>({lat:x.lat,lon:x.lon,t:x.t,label:"追加+"+(i+1)})));
+  // 直前・直後
+  let prev=null,next=null;
+  all.forEach(s=>{ if(s.t<=t&&(!prev||s.t>prev.t))prev=s; if(s.t>=t&&(!next||s.t<next.t))next=s; });
+  function spd(s){ if(!s)return null; const h=Math.abs(t-s.t)/3600000; const km=haversine(lat,lon,s.lat,s.lon)/1000; return {km,h,v:h<=0.001?(km>0.05?Infinity:0):km/h,ref:s}; }
+  const sp=spd(prev), sn=spd(next);
+  // 同時刻矛盾：±60分以内に、必要速度がBEARRUSH超の遠隔点があれば「別個体」
+  let conflict=null;
+  all.forEach(s=>{ const h=Math.abs(t-s.t)/3600000; if(h>0&&h<=1){ const km=haversine(lat,lon,s.lat,s.lon)/1000; const v=km/h; if(v>BEARRUSHKMH&&(!conflict||v>conflict.v))conflict={v,km,h,ref:s}; }});
+  const reqs=[sp,sn].filter(Boolean).map(x=>x.v);
+  const maxReq=reqs.length?Math.max(...reqs.filter(isFinite).concat(reqs.includes(Infinity)?[Infinity]:[])):0;
+  return {sp,sn,conflict,maxReq};
+}
+function renderAddResult(lat,lon,t){
+  const r=evalNew(lat,lon,t), res=document.getElementById("addResult");
+  let cls,msg;
+  if(r.conflict){ cls="new"; msg=`<b>⚠ 別の個体（複数頭）の可能性が高い。</b> ${fmtDT(r.conflict.ref.t)}の目撃(${r.conflict.ref.label})と<b>約${Math.round(r.conflict.h*60)}分差で約${r.conflict.km.toFixed(1)}km離れており</b>、1頭では到達不能（必要時速 約${r.conflict.v.toFixed(0)}km）。市へ通報を。`; }
+  else if(r.maxReq<=BEARMAXKMH){ cls="ok"; msg=`<b>既知のクマの動きで説明できます。</b> 直前/直後の目撃から必要時速は最大 約${r.maxReq.toFixed(1)}km で、通常の移動範囲内。同一個体の経路と整合します。`; }
+  else if(r.maxReq<=BEARRUSHKMH){ cls="maybe"; msg=`<b>急いで移動すれば同一個体でも可能</b>（必要時速 約${r.maxReq.toFixed(1)}km）。別個体の可能性も残ります。`; }
+  else { cls="new"; msg=`<b>⚠ 既知の経路から到達困難（必要時速 約${(isFinite(r.maxReq)?r.maxReq.toFixed(0):"∞")}km）。新しい個体の可能性。</b>市へ通報を。`; }
+  const det=[r.sp?`直前${r.sp.ref.label}: ${isFinite(r.sp.v)?r.sp.v.toFixed(1):"∞"}km/h`:null, r.sn?`直後${r.sn.ref.label}: ${isFinite(r.sn.v)?r.sn.v.toFixed(1):"∞"}km/h`:null].filter(Boolean).join(" ／ ");
+  res.className="result show "+cls;
+  res.innerHTML=`${msg}<div class="kv" style="margin-top:6px">${det}</div>`;
+  return cls;
+}
+document.getElementById("addBtn").addEventListener("click",()=>{
+  const d=document.getElementById("nDate").value, tm=document.getElementById("nTime").value;
+  const lat=parseFloat(document.getElementById("nLat").value), lon=parseFloat(document.getElementById("nLon").value);
+  const note=document.getElementById("nNote").value.trim();
+  if(!d||!tm){alert("日付と時刻を入力してください。");return;}
+  if(isNaN(lat)||isNaN(lon)){alert("位置（緯度・経度）を入力するか、地図をクリックして指定してください。");return;}
+  const t=parseDT(d+" "+tm);
+  const cls=renderAddResult(lat,lon,t);
+  const a=loadAdded(); a.push({dt:d+" "+tm,note,lat,lon,t,cls}); saveAdded(a); drawAdded();
+});
+function drawAdded(){
+  userLayer.clearLayers();
+  const a=loadAdded().sort((x,y)=>x.t-y.t);
+  const box=document.getElementById("addedList"); box.innerHTML="";
+  a.forEach((s,i)=>{
+    L.marker([s.lat,s.lon],{icon:L.divIcon({className:"",html:`<div class="badge-num" style="background:#7b2ff7;border-style:dashed">+${i+1}</div>`,iconSize:[24,24],iconAnchor:[12,12]})})
+      .bindPopup(`<div class="pop-t">追加目撃 +${i+1}</div>${fmtDT(s.t)}<br>${s.note||""}<br><span class="kv">${s.cls==="new"?"別個体の可能性":s.cls==="maybe"?"同一個体なら急移動":"既知の動きと整合"}</span>`).addTo(userLayer);
+    const row=document.createElement("div"); row.className="added";
+    const lab=s.cls==="new"?"／別個体?":s.cls==="maybe"?"／要確認":"／整合";
+    row.innerHTML=`<span><b>+${i+1}</b> ${fmtDT(s.t)} ${s.note||""} <small>${lab}</small></span>`;
+    const del=document.createElement("button"); del.className="delx"; del.textContent="削除";
+    del.onclick=()=>{ const arr=loadAdded(); arr.splice(i,1); saveAdded(arr); drawAdded(); };
+    row.appendChild(del); box.appendChild(row);
+  });
+}
+drawAdded();
+
+/* ===================== task checklist ===================== */
+const TASKS=[
+  "宇都宮市の最新の目撃情報ページを確認する",
+  "新しい目撃を上のフォームから地図に追加する",
+  "判定結果を確認（『別個体の可能性』＝頭数が増えた疑い）",
+  "小中学校の休校・登下校情報を確認する",
+  "早朝・夜間の外出を控え、家族・近所と情報を共有する",
+  "危険を感じたら110番／市(028-632-2477)へ通報する"
+];
+function loadTasks(){ try{return JSON.parse(localStorage.getItem(LS_TASK))||{}}catch(e){return{}} }
+function saveTasks(o){ localStorage.setItem(LS_TASK,JSON.stringify(o)); }
+function renderTasks(){
+  const st=loadTasks(), ul=document.getElementById("taskList"); ul.innerHTML="";
+  TASKS.forEach((t,i)=>{
+    const li=document.createElement("li"); if(st[i])li.className="done";
+    const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=!!st[i]; cb.id="t"+i;
+    cb.onchange=()=>{ const s=loadTasks(); s[i]=cb.checked; saveTasks(s); renderTasks(); };
+    const lb=document.createElement("label"); lb.htmlFor="t"+i; lb.textContent=t;
+    li.appendChild(cb); li.appendChild(lb); ul.appendChild(li);
+  });
+}
+renderTasks();
+document.getElementById("resetTasks").addEventListener("click",()=>{ saveTasks({}); renderTasks(); });
+
+document.getElementById("genstamp").textContent="（生成：2026-06-08）";
+</script>
+</body>
+</html>

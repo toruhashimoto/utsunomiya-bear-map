@@ -91,7 +91,7 @@
 <body>
 <header class="app">
   <h1>🧭 宇都宮 クマ出没 <span style="color:#bfe6d8">推論マップ</span> <span style="font-weight:400;font-size:.62em;opacity:.85">/ 目撃データの時空間分析</span></h1>
-  <div class="sub"><span class="ribbon">注意</span>市・報道の目撃情報（令和8年6月8日時点・計15地点）から、時刻と位置で<b>「クマは何頭か」を推定</b>。<b>1頭⇄2頭</b>の見比べ・タイムライン再生つき。市民作成の<b>非公式</b>分析ツールです。</div>
+  <div class="sub"><span class="ribbon">注意</span>市・報道・目撃情報（令和8年6月8日時点・計16地点）から、時刻と位置で<b>「クマは何頭か」を推定</b>。<b>1頭⇄2頭</b>の見比べ・タイムライン再生つき。市民作成の<b>非公式</b>分析ツールです。</div>
 </header>
 
 <div class="wrap">
@@ -129,10 +129,10 @@
   </div>
 
   <div class="foot">
-    データ出典：<a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市「クマの出没にご注意ください」</a>（令和8年6月8日時点、市13件）＋<a href="https://www.shimotsuke.co.jp/articles/-/1361127" target="_blank" rel="noopener">下野新聞</a>（追加2件：オリオン通り、栃木銀行陽南支店付近）＝計15地点。
+    データ出典：<a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市「クマの出没にご注意ください」</a>（令和8年6月8日時点、市13件）＋<a href="https://www.shimotsuke.co.jp/articles/-/1361127" target="_blank" rel="noopener">下野新聞</a>（2件：オリオン通り、栃木銀行陽南支店付近）＋X個人投稿（1件：川田町・下栗大塚通り付近、写真あり・未検証）＝計16地点。
     地図：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a> / © OpenStreetMap contributors。
-    座標は目撃地点の推定値（ランドマーク＋記載方向・距離から算出）であり誤差を含みます。<br>
-    本ツールは市民による非公式の分析・可視化です。分析手法：全15地点を時系列で結び、各区間の所要時間と距離からクマの移動可能速度（小走り約8〜10km/h）を超えるか、同時刻に離れた2地点の矛盾がないかを多角的に検証。<span id="genstamp"></span>
+    座標は目撃地点の推定値（ランドマーク＋記載方向・距離から算出）であり誤差を含みます。SNS投稿は未検証情報を含みます。<br>
+    本ツールは市民による非公式の分析・可視化です。分析手法：全16地点を時系列で結び、各区間の所要時間と距離からクマの移動可能速度（小走り約8〜10km/h）を超えるか、同時刻に離れた2地点の矛盾がないかを多角的に検証。<span id="genstamp"></span>
   </div>
 </div>
 
@@ -159,13 +159,14 @@ const SIGHTINGS = [
   {id:13, dt:"2026-06-08 03:20", area:"簗瀬町",           place:"中央卸売市場から西100m付近",          lat:36.5463, lon:139.8913, bear:"A"},
   {id:14, dt:"2026-06-08 04:25", area:"陽南1丁目",        place:"陽南中学校から北東500m付近",          lat:36.5382, lon:139.8805, bear:"A"},
   {id:15, dt:"2026-06-08 18:55", area:"陽南2丁目",        place:"陽南中学校の東側",                    lat:36.5350, lon:139.8782, bear:"A"},
+  {id:16, dt:"2026-06-08 20:00", area:"川田町",           place:"下栗大塚通り付近（目撃写真あり）",      lat:36.5302, lon:139.8925, bear:"A", src:"X(個人投稿)"},
 ];
 
 /* 推論結果（独立した4分析＋3反証＋統合の結論）。 */
 const ANALYSIS = {
-  headline: "計15地点の目撃は、1頭のクマが夜間に市内を移動した経路として最も無理なく説明できます。2頭の可能性も残りますが、複数頭を断定する決定的証拠（同時刻・遠隔の目撃や、母子が一緒に写った記録）はありません。",
+  headline: "計16地点の目撃は、1頭のクマが夜間に市内を移動した経路として最も無理なく説明できます。2頭の可能性も残りますが、複数頭を断定する決定的証拠（同時刻・遠隔の目撃や、母子が一緒に写った記録）はありません。",
   prob: { one: 0.62, two: 0.33, threePlus: 0.05 },
-  oneBearNarr: "6/6夕方に市北部（富士見が丘・長岡）に現れ、上大曽→塙田（県立図書館）と南下。未明に中心市街地（オリオン通り）を抜けて明保野・大塚を通り、明け方に姿川・西川田へ。6/7の日中は姿川中付近で約10.5時間ほぼ静止して休息し、夜間に簗瀬へ移動、6/8は陽南で約14.5時間休息。総移動は約48時間で13.5km・平均時速0.28kmと、1頭の行動圏（約22平方km）に収まります。",
+  oneBearNarr: "6/6夕方に市北部（富士見が丘・長岡）に現れ、上大曽→塙田（県立図書館）と南下。未明に中心市街地（オリオン通り）を抜けて明保野・大塚を通り、明け方に姿川・西川田へ。6/7の日中は姿川中付近で約10.5時間ほぼ静止して休息し、夜間に簗瀬へ移動、6/8は陽南で日中を過ごし、夜20時頃には川田町（東・鬼怒川方面）へ向かいました。総移動は約2日間で15km前後・概ね歩く速度の範囲で、1頭の行動圏（約22平方km）に収まります。",
   bears: {
     A: { label:"北部・中央南回廊の個体", color:"#d7263d",
          narr:"富士見が丘から夜間に南下し、塙田・図書館付近を経て明保野・大塚へと市街地を縦断。その後6/8には簗瀬・陽南の中央南エリアに現れ、陽南中学校付近に滞在。移動はすべて夕方〜早朝の暗い時間帯に集中。" },
@@ -303,7 +304,7 @@ document.getElementById("resetBtn").addEventListener("click",()=>{ stop(); tl.va
     <div class="caveat"><b>正直な留保（断定しないこと）</b><ul class="ulist" style="margin:4px 0">${a.caveats.map(c=>`<li>${c}</li>`).join("")}</ul></div>`;
 })();
 
-document.getElementById("genstamp").textContent="（最終更新：2026-06-08 23:00 JST）";
+document.getElementById("genstamp").textContent="（最終更新：2026-06-08 23:16 JST）";
 </script>
 </body>
 </html>

@@ -91,7 +91,7 @@
 <body>
 <header class="app">
   <h1>🧭 宇都宮 クマ出没 <span style="color:#bfe6d8">推論マップ</span> <span style="font-weight:400;font-size:.62em;opacity:.85">/ 目撃データの時空間分析</span></h1>
-  <div class="sub"><span class="ribbon">注意</span>市公開の目撃情報（令和8年6月8日時点・全13件）から、時刻と位置で<b>「クマは何頭か」を推定</b>。<b>1頭⇄2頭</b>の見比べ・タイムライン再生つき。市民作成の<b>非公式</b>分析ツールです。</div>
+  <div class="sub"><span class="ribbon">注意</span>市・報道の目撃情報（令和8年6月8日時点・計15地点）から、時刻と位置で<b>「クマは何頭か」を推定</b>。<b>1頭⇄2頭</b>の見比べ・タイムライン再生つき。市民作成の<b>非公式</b>分析ツールです。</div>
 </header>
 
 <div class="wrap">
@@ -129,10 +129,10 @@
   </div>
 
   <div class="foot">
-    データ出典：<a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市「クマの出没にご注意ください」</a>（令和8年6月8日時点、全13件）／参考：<a href="https://www.shimotsuke.co.jp/articles/-/1361127" target="_blank" rel="noopener">下野新聞</a>。
+    データ出典：<a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市「クマの出没にご注意ください」</a>（令和8年6月8日時点、市13件）＋<a href="https://www.shimotsuke.co.jp/articles/-/1361127" target="_blank" rel="noopener">下野新聞</a>（追加2件：オリオン通り、栃木銀行陽南支店付近）＝計15地点。
     地図：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a> / © OpenStreetMap contributors。
     座標は目撃地点の推定値（ランドマーク＋記載方向・距離から算出）であり誤差を含みます。<br>
-    本ツールは市民による非公式の分析・可視化です。分析手法：全13地点を時系列で結び、各区間の所要時間と距離からクマの移動可能速度（小走り約8〜10km/h）を超えるか、同時刻に離れた2地点の矛盾がないかを多角的に検証。<span id="genstamp"></span>
+    本ツールは市民による非公式の分析・可視化です。分析手法：全15地点を時系列で結び、各区間の所要時間と距離からクマの移動可能速度（小走り約8〜10km/h）を超えるか、同時刻に離れた2地点の矛盾がないかを多角的に検証。<span id="genstamp"></span>
   </div>
 </div>
 
@@ -147,23 +147,25 @@ const SIGHTINGS = [
   {id:1,  dt:"2026-06-06 18:30", area:"富士見が丘1丁目", place:"長岡公園から南東250m付近",            lat:36.5869, lon:139.8807, bear:"A"},
   {id:2,  dt:"2026-06-06 21:10", area:"上大曽町",         place:"中央消防署(消防本部)から北西350m付近", lat:36.5746, lon:139.8869, bear:"A"},
   {id:3,  dt:"2026-06-07 01:14", area:"塙田1丁目",        place:"栃木県立図書館付近",                  lat:36.5652, lon:139.8855, bear:"A"},
-  {id:4,  dt:"2026-06-07 05:08", area:"明保野町",         place:"明保野公園内",                        lat:36.5459, lon:139.8682, bear:"A"},
-  {id:5,  dt:"2026-06-07 05:15", area:"大塚町",           place:"宇都宮高校から南300m付近",            lat:36.5385, lon:139.8628, bear:"A"},
-  {id:6,  dt:"2026-06-07 05:30", area:"西川田町",         place:"姿川中学校から北100m付近",            lat:36.5368, lon:139.8561, bear:"B"},
-  {id:7,  dt:"2026-06-07 15:58", area:"西川田町",         place:"姿川中学校 校庭",                     lat:36.5360, lon:139.8561, bear:"B"},
-  {id:8,  dt:"2026-06-07 16:40", area:"西川田町",         place:"たいらや(姿川店)から南150m付近",       lat:36.5343, lon:139.8526, bear:"B"},
-  {id:9,  dt:"2026-06-07 20:30", area:"西川田町",         place:"姿川中学校から南300m付近",            lat:36.5332, lon:139.8561, bear:"B"},
-  {id:10, dt:"2026-06-07 23:50", area:"西川田町",         place:"姿川地区市民センターから東500m付近",   lat:36.5295, lon:139.8546, bear:"B"},
-  {id:11, dt:"2026-06-08 03:20", area:"簗瀬町",           place:"中央卸売市場から西100m付近",          lat:36.5463, lon:139.8913, bear:"A"},
-  {id:12, dt:"2026-06-08 04:25", area:"陽南1丁目",        place:"陽南中学校から北東500m付近",          lat:36.5382, lon:139.8805, bear:"A"},
-  {id:13, dt:"2026-06-08 18:55", area:"陽南2丁目",        place:"陽南中学校の東側",                    lat:36.5350, lon:139.8782, bear:"A"},
+  {id:4,  dt:"2026-06-07 02:20", area:"中心市街地",       place:"オリオン通り（防犯カメラ映像）",         lat:36.5602, lon:139.8834, bear:"A", src:"下野新聞"},
+  {id:5,  dt:"2026-06-07 05:08", area:"明保野町",         place:"明保野公園内",                        lat:36.5459, lon:139.8682, bear:"A"},
+  {id:6,  dt:"2026-06-07 05:15", area:"大塚町",           place:"宇都宮高校から南300m付近",            lat:36.5385, lon:139.8628, bear:"A"},
+  {id:7,  dt:"2026-06-07 05:30", area:"西川田町",         place:"姿川中学校から北100m付近",            lat:36.5368, lon:139.8561, bear:"B"},
+  {id:8,  dt:"2026-06-07 15:58", area:"西川田町",         place:"姿川中学校 校庭",                     lat:36.5360, lon:139.8561, bear:"B"},
+  {id:9,  dt:"2026-06-07 16:40", area:"西川田町",         place:"たいらや(姿川店)から南150m付近",       lat:36.5343, lon:139.8526, bear:"B"},
+  {id:10, dt:"2026-06-07 20:30", area:"西川田町",         place:"姿川中学校から南300m付近",            lat:36.5332, lon:139.8561, bear:"B"},
+  {id:11, dt:"2026-06-07 23:50", area:"西川田町",         place:"姿川地区市民センターから東500m付近",   lat:36.5295, lon:139.8546, bear:"B"},
+  {id:12, dt:"2026-06-08 00:20", area:"南西部(陽南支店付近)", place:"栃木銀行陽南支店付近",            lat:36.5287, lon:139.8625, bear:"A", src:"下野新聞"},
+  {id:13, dt:"2026-06-08 03:20", area:"簗瀬町",           place:"中央卸売市場から西100m付近",          lat:36.5463, lon:139.8913, bear:"A"},
+  {id:14, dt:"2026-06-08 04:25", area:"陽南1丁目",        place:"陽南中学校から北東500m付近",          lat:36.5382, lon:139.8805, bear:"A"},
+  {id:15, dt:"2026-06-08 18:55", area:"陽南2丁目",        place:"陽南中学校の東側",                    lat:36.5350, lon:139.8782, bear:"A"},
 ];
 
 /* 推論結果（独立した4分析＋3反証＋統合の結論）。 */
 const ANALYSIS = {
-  headline: "13件の目撃は、1頭のクマが夜間に市内を移動した経路として最も無理なく説明できます。2頭の可能性も残りますが、複数頭を断定する決定的証拠（同時刻・遠隔の目撃や、母子が一緒に写った記録）はありません。",
+  headline: "計15地点の目撃は、1頭のクマが夜間に市内を移動した経路として最も無理なく説明できます。2頭の可能性も残りますが、複数頭を断定する決定的証拠（同時刻・遠隔の目撃や、母子が一緒に写った記録）はありません。",
   prob: { one: 0.62, two: 0.33, threePlus: 0.05 },
-  oneBearNarr: "6/6夕方に市北部（富士見が丘・長岡）に現れ、上大曽→塙田（県立図書館）と南下。未明に市街地を縦断して明保野・大塚を抜け、明け方に姿川・西川田へ。6/7の日中は姿川中付近で約10.5時間ほぼ静止して休息し、夜間に簗瀬へ移動、6/8は陽南で約14.5時間休息。総移動は約48時間で13.5km・平均時速0.28kmと、1頭の行動圏（約22平方km）に収まります。",
+  oneBearNarr: "6/6夕方に市北部（富士見が丘・長岡）に現れ、上大曽→塙田（県立図書館）と南下。未明に中心市街地（オリオン通り）を抜けて明保野・大塚を通り、明け方に姿川・西川田へ。6/7の日中は姿川中付近で約10.5時間ほぼ静止して休息し、夜間に簗瀬へ移動、6/8は陽南で約14.5時間休息。総移動は約48時間で13.5km・平均時速0.28kmと、1頭の行動圏（約22平方km）に収まります。",
   bears: {
     A: { label:"北部・中央南回廊の個体", color:"#d7263d",
          narr:"富士見が丘から夜間に南下し、塙田・図書館付近を経て明保野・大塚へと市街地を縦断。その後6/8には簗瀬・陽南の中央南エリアに現れ、陽南中学校付近に滞在。移動はすべて夕方〜早朝の暗い時間帯に集中。" },
@@ -233,7 +235,7 @@ function draw(frac){
     if(s.t>cut) return;
     const m=L.marker([s.lat,s.lon],{icon:numIcon(s)});
     const tag = hypo==="two" ? `<span class="tag" style="background:${s.bear==="A"?ANALYSIS.bears.A.color:ANALYSIS.bears.B.color}">クマ${s.bear}</span>` : "";
-    m.bindPopup(`<div class="pop-t">#${s.id}　${fmtDT(s.t)} ${tag}</div>${s.area}<br>${s.place}<br><span class="kv">(${s.lat}, ${s.lon})</span>`);
+    m.bindPopup(`<div class="pop-t">#${s.id}　${fmtDT(s.t)} ${tag}</div>${s.area}<br>${s.place}${s.src?` <span class="kv">／出典:${s.src}</span>`:""}<br><span class="kv">(${s.lat}, ${s.lon})</span>`);
     m.addTo(map); markerObjs.push(m);
   });
   document.getElementById("clock").textContent = frac>=1 ? "全期間を表示" : "〜 "+fmtDT(cut);
@@ -301,7 +303,7 @@ document.getElementById("resetBtn").addEventListener("click",()=>{ stop(); tl.va
     <div class="caveat"><b>正直な留保（断定しないこと）</b><ul class="ulist" style="margin:4px 0">${a.caveats.map(c=>`<li>${c}</li>`).join("")}</ul></div>`;
 })();
 
-document.getElementById("genstamp").textContent="（生成：2026-06-08）";
+document.getElementById("genstamp").textContent="（最終更新：2026-06-08 23:00 JST）";
 </script>
 </body>
 </html>

@@ -73,12 +73,6 @@
   .result.ok{background:#eef7ee;border:1px solid #cfe8cf}
   .result.maybe{background:#fff8e6;border:1px solid #f0e2bf}
   .result.new{background:#fdecec;border:1px solid #f3c9c9}
-  ul.tasks{list-style:none;margin:0;padding:0}
-  ul.tasks li{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed var(--line)}
-  ul.tasks li:last-child{border-bottom:0}
-  ul.tasks input{margin-top:4px;width:18px;height:18px;accent-color:#1763b8}
-  ul.tasks label{font-size:.88rem}
-  .done label{text-decoration:line-through;color:var(--muted)}
   .ulist{font-size:.84rem;margin:6px 0;padding-left:1.1em}
   .added{font-size:.82rem;border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin-top:6px;display:flex;justify-content:space-between;gap:8px;align-items:center}
   .added small{color:var(--muted)}
@@ -151,14 +145,6 @@
           </div>
           <div class="result" id="addResult"></div>
           <div id="addedList"></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>✅ 更新タスク（チェックリスト）</h2>
-        <div class="body">
-          <ul class="tasks" id="taskList"></ul>
-          <p class="hint" style="margin-top:8px">チェック状態はこの端末に保存されます。次の確認の前にリセット → <button class="btn ghost" id="resetTasks" style="padding:3px 8px">タスクを未完了に戻す</button></p>
         </div>
       </div>
 
@@ -361,7 +347,7 @@ document.getElementById("resetBtn").addEventListener("click",()=>{ stop(); tl.va
 })();
 
 /* ===================== add-sighting tool (localStorage) ===================== */
-const LS_ADD="utsuBear_added_v2", LS_TASK="utsuBear_tasks_v2";
+const LS_ADD="utsuBear_added_v2";
 let picking=false;
 const userLayer=L.layerGroup().addTo(map);
 function loadAdded(){ try{return JSON.parse(localStorage.getItem(LS_ADD))||[]}catch(e){return[]} }
@@ -432,30 +418,6 @@ function drawAdded(){
   });
 }
 drawAdded();
-
-/* ===================== task checklist ===================== */
-const TASKS=[
-  "宇都宮市の最新の目撃情報ページを確認する",
-  "新しい目撃を上のフォームから地図に追加する",
-  "判定結果を確認（『別個体の可能性』＝頭数が増えた疑い）",
-  "小中学校の休校・登下校情報を確認する",
-  "早朝・夜間の外出を控え、家族・近所と情報を共有する",
-  "危険を感じたら110番／市(028-632-2477)へ通報する"
-];
-function loadTasks(){ try{return JSON.parse(localStorage.getItem(LS_TASK))||{}}catch(e){return{}} }
-function saveTasks(o){ localStorage.setItem(LS_TASK,JSON.stringify(o)); }
-function renderTasks(){
-  const st=loadTasks(), ul=document.getElementById("taskList"); ul.innerHTML="";
-  TASKS.forEach((t,i)=>{
-    const li=document.createElement("li"); if(st[i])li.className="done";
-    const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=!!st[i]; cb.id="t"+i;
-    cb.onchange=()=>{ const s=loadTasks(); s[i]=cb.checked; saveTasks(s); renderTasks(); };
-    const lb=document.createElement("label"); lb.htmlFor="t"+i; lb.textContent=t;
-    li.appendChild(cb); li.appendChild(lb); ul.appendChild(li);
-  });
-}
-renderTasks();
-document.getElementById("resetTasks").addEventListener("click",()=>{ saveTasks({}); renderTasks(); });
 
 document.getElementById("genstamp").textContent="（生成：2026-06-08）";
 </script>

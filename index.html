@@ -9,8 +9,9 @@
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <style>
   :root{
-    --bearA:#d7263d; --bearB:#1763b8; --one:#8a5a2b; --user:#7b2ff7;
-    --ink:#1a1a1a; --muted:#5b6470; --line:#e3e7ec; --bg:#f4f6f9;
+    --bearA:#d7263d; --bearB:#1763b8; --one:#0e7c66; --user:#7b2ff7;
+    --brand:#14564a; --brand2:#0f3d2e; --accent:#18a07a;
+    --ink:#1a1a1a; --muted:#5b6470; --line:#e2e8e6; --bg:#eef3f1;
     --warn:#b8860b; --warnbg:#fff8e6; --danger:#b00020;
     --cardradius:14px;
   }
@@ -19,7 +20,7 @@
   body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,-apple-system,sans-serif;
     color:var(--ink);background:var(--bg);line-height:1.6;-webkit-text-size-adjust:100%}
   a{color:#1763b8}
-  header.app{background:linear-gradient(135deg,#2b2118,#4a3826);color:#fff;padding:14px 16px 16px}
+  header.app{background:linear-gradient(135deg,var(--brand2),var(--brand));color:#fff;padding:14px 16px 16px;border-bottom:3px solid var(--accent)}
   header.app h1{margin:0;font-size:1.22rem;letter-spacing:.02em}
   header.app .sub{margin-top:4px;font-size:.82rem;color:#f0e2cf;opacity:.95}
   .ribbon{display:inline-block;background:var(--danger);color:#fff;font-weight:700;font-size:.72rem;
@@ -29,19 +30,19 @@
   @media(min-width:880px){.grid{grid-template-columns:1.55fr 1fr}}
   .card{background:#fff;border:1px solid var(--line);border-radius:var(--cardradius);
     box-shadow:0 1px 3px rgba(20,30,50,.05);overflow:hidden}
-  .card h2{font-size:1.0rem;margin:0;padding:12px 14px;border-bottom:1px solid var(--line);background:#fbfcfd}
+  .card h2{font-size:1.0rem;margin:0;padding:12px 14px;border-bottom:1px solid var(--line);border-left:4px solid var(--accent);background:#fbfcfd}
   .card .body{padding:12px 14px}
   #map{height:60vh;min-height:420px;width:100%;background:#dfe6ea}
   @media(min-width:880px){#map{height:560px}}
   .mapcard{padding:0}
   .controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:#fbfcfd}
   .controls button{border:1px solid #c9d2dc;background:#fff;border-radius:8px;padding:6px 12px;font-size:.85rem;cursor:pointer}
-  .controls button.primary{background:#2b2118;color:#fff;border-color:#2b2118}
-  .controls input[type=range]{flex:1;min-width:120px;accent-color:#2b2118}
+  .controls button.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .controls input[type=range]{flex:1;min-width:120px;accent-color:var(--brand)}
   .clock{font-variant-numeric:tabular-nums;font-weight:700;font-size:.85rem;min-width:120px}
   .seg{display:inline-flex;border:1px solid #c9d2dc;border-radius:8px;overflow:hidden}
   .seg button{border:0;border-radius:0;background:#fff;padding:6px 10px;font-size:.82rem}
-  .seg button.on{background:#2b2118;color:#fff}
+  .seg button.on{background:var(--brand);color:#fff}
   .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.82rem;padding:8px 12px;border-top:1px solid var(--line)}
   .legend .key{display:inline-flex;align-items:center;gap:6px}
   .dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid #fff;box-shadow:0 0 0 1px #888}
@@ -95,8 +96,8 @@
 </head>
 <body>
 <header class="app">
-  <h1>🐻 宇都宮市 クマ出没マップ・推論分析</h1>
-  <div class="sub"><span class="ribbon">注意</span>市公開の目撃情報（令和8年6月8日時点・全13件）を地図化し、時刻と位置から<b>個体数（1頭か2頭か）</b>を多角的に分析。市民が作成した<b>非公式</b>のツールです。</div>
+  <h1>🧭 宇都宮 クマ出没 <span style="color:#bfe6d8">推論マップ</span> <span style="font-weight:400;font-size:.62em;opacity:.85">/ 目撃データの時空間分析</span></h1>
+  <div class="sub"><span class="ribbon">注意</span>市公開の目撃情報（令和8年6月8日時点・全13件）から、時刻と位置で<b>「クマは何頭か」を推定</b>。<b>1頭⇄2頭</b>の見比べ・タイムライン再生つき。市民作成の<b>非公式</b>分析ツールです。</div>
 </header>
 
 <div class="wrap">
@@ -265,7 +266,7 @@ gsiPale.addTo(map);
 L.control.layers({"地理院 淡色":gsiPale,"地理院 標準":gsiStd,"OpenStreetMap":osm},null,{position:"topright"}).addTo(map);
 
 let hypo="one"; // "one" | "two"
-function numIcon(s){ const c=hypo==="one"?"#8a5a2b":(s.bear==="A"?ANALYSIS.bears.A.color:ANALYSIS.bears.B.color);
+function numIcon(s){ const c=hypo==="one"?"#0e7c66":(s.bear==="A"?ANALYSIS.bears.A.color:ANALYSIS.bears.B.color);
   return L.divIcon({className:"",html:`<div class="badge-num" style="background:${c}">${s.id}</div>`,iconSize:[24,24],iconAnchor:[12,12]}); }
 
 let markerObjs=[], pathLayers=[];
@@ -276,7 +277,7 @@ function draw(frac){
   // paths
   if(hypo==="one"){
     const pts=SIGHTINGS.filter(s=>s.t<=cut).sort((x,y)=>x.t-y.t).map(s=>[s.lat,s.lon]);
-    if(pts.length>1) pathLayers.push(L.polyline(pts,{color:"#8a5a2b",weight:3,opacity:.8,dashArray:"7,7"}).addTo(map));
+    if(pts.length>1) pathLayers.push(L.polyline(pts,{color:"#0e7c66",weight:3,opacity:.8,dashArray:"7,7"}).addTo(map));
   }else{
     ["A","B"].forEach(b=>{
       const col=b==="A"?ANALYSIS.bears.A.color:ANALYSIS.bears.B.color;
@@ -300,7 +301,7 @@ function renderLegend(){
   const L1=document.getElementById("legend");
   if(hypo==="one"){
     L1.innerHTML=
-      `<span class="key"><span class="dot" style="background:#8a5a2b"></span>1頭のクマの推定経路（最有力）</span>`+
+      `<span class="key"><span class="dot" style="background:#0e7c66"></span>1頭のクマの推定経路（最有力）</span>`+
       `<span class="key"><span class="dot" style="background:var(--user)"></span>追加した目撃（あなたの入力）</span>`+
       `<span class="key">番号＝時系列の順番（点線＝推定移動経路）</span>`;
   }else{
@@ -339,9 +340,9 @@ document.getElementById("resetBtn").addEventListener("click",()=>{ stop(); tl.va
     <div class="verdict"><span class="vb">最有力：1頭（${pct(p.one)}%）</span><span class="kv">2頭 ${pct(p.two)}% ／ 3頭以上 ${pct(p.threePlus)}%</span></div>
     <p style="margin:2px 0 8px"><b>${a.headline}</b></p>
     <div class="prob">
-      <div style="width:${pct(p.one)}%;background:#8a5a2b" title="1頭">${pct(p.one)}% 1頭</div>
-      <div style="width:${pct(p.two)}%;background:#2b7a2b" title="2頭">${pct(p.two)}% 2頭</div>
-      <div style="width:${pct(p.threePlus)}%;background:#b8860b" title="3頭以上">${pct(p.threePlus)}%</div>
+      <div style="width:${pct(p.one)}%;background:#0e7c66" title="1頭">${pct(p.one)}% 1頭</div>
+      <div style="width:${pct(p.two)}%;background:#c2740c" title="2頭">${pct(p.two)}% 2頭</div>
+      <div style="width:${pct(p.threePlus)}%;background:#6b7280" title="3頭以上">${pct(p.threePlus)}%</div>
     </div>
     <p class="hint">地図左上の切替で<b>「1頭仮説」「2頭仮説」</b>の見え方を比較できます。</p>
 

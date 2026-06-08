@@ -125,55 +125,11 @@
         <div class="body" id="analysisBody"></div>
       </div>
 
-      <div class="card">
-        <h2>➕ 新しい目撃情報を追加（自動再評価）</h2>
-        <div class="body">
-          <p class="hint">市の更新で新しい目撃が出たら、ここに入力すると「既知のクマの動きで説明できるか／<b>別の個体</b>の可能性か」を自動判定します。位置は<b>地図をクリック</b>して指定できます。</p>
-          <div class="row">
-            <div><label class="fld">日付</label><input type="date" id="nDate" value="2026-06-09" /></div>
-            <div><label class="fld">時刻</label><input type="time" id="nTime" value="06:00" /></div>
-          </div>
-          <label class="fld">場所メモ（任意）</label>
-          <input type="text" id="nNote" placeholder="例）西川田町 ○○付近" />
-          <div class="row">
-            <div><label class="fld">緯度 lat</label><input type="text" id="nLat" placeholder="地図クリックで自動入力" /></div>
-            <div><label class="fld">経度 lon</label><input type="text" id="nLon" placeholder="同上" /></div>
-          </div>
-          <div class="btnrow">
-            <button class="btn primary" id="addBtn">追加して判定</button>
-            <button class="btn ghost" id="pickBtn">📍 地図で位置を選ぶ</button>
-          </div>
-          <div class="result" id="addResult"></div>
-          <div id="addedList"></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>🆘 安全のために</h2>
-        <div class="body safety">
-          <p><b>通報・相談先</b><br>
-          ・平日 8:30–17:15：森林管理・鳥獣対策グループ <span class="tel">028-632-2477</span><br>
-          ・夜間・休日：コールセンター <span class="tel">028-632-2222</span><br>
-          ・<b>身の危険を感じたら 110番</b></p>
-          <p id="safetyNote" style="margin:8px 0 0"></p>
-          <details style="margin-top:8px">
-            <summary>クマに出会わない・出会ったときの行動</summary>
-            <ul class="ulist">
-              <li>早朝・夕方〜夜は外出を控える（クマが活発な時間帯）。</li>
-              <li>音（鈴・ラジオ・声）で人の存在を知らせ、出会い頭を避ける。</li>
-              <li>生ゴミ・果実・収穫物を屋外に放置しない（誘引源）。</li>
-              <li>子グマを見ても近づかない。近くに母グマがいて非常に危険。</li>
-              <li>出会ったら走って背を向けない。ゆっくり後退して距離をとる。</li>
-              <li>登下校・通学路では複数人で行動し、暗い時間を避ける。</li>
-            </ul>
-          </details>
-        </div>
-      </div>
     </div>
   </div>
 
   <div class="foot">
-    データ出典：<a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市「クマの出没にご注意ください」</a>（令和8年6月8日時点、全13件）。
+    データ出典：<a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市「クマの出没にご注意ください」</a>（令和8年6月8日時点、全13件）／参考：<a href="https://www.shimotsuke.co.jp/articles/-/1361127" target="_blank" rel="noopener">下野新聞</a>。
     地図：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a> / © OpenStreetMap contributors。
     座標は目撃地点の推定値（ランドマーク＋記載方向・距離から算出）であり誤差を含みます。<br>
     本ツールは市民による非公式の分析・可視化です。分析手法：全13地点を時系列で結び、各区間の所要時間と距離からクマの移動可能速度（小走り約8〜10km/h）を超えるか、同時刻に離れた2地点の矛盾がないかを多角的に検証。<span id="genstamp"></span>
@@ -215,6 +171,7 @@ const ANALYSIS = {
          narr:"6/7の早朝から深夜まで、姿川中学校を中心とした半径約0.8kmの狭い範囲（西川田・姿川地区）に約18時間とどまり続けた。日中はほとんど動かず、身を潜めて休息・採食したとみられる定着型の動き。" }
   },
   evidence: [
+    "<b>報道・当局の見方とも一致</b>：下野新聞(6/8)によると当局は<b>同一個体（推定100kg超の成獣）の可能性が高い</b>とみており、市内の目撃は40件以上。本分析の『1頭が最有力』という結論と整合します。",
     "全13地点を時刻順につなぐと、どの区間も最速で<b>時速8.2km（明保野→大塚の7分間のみ）</b>、他はすべて時速2.5km以下。クマの通常の歩み・小走りの範囲に完全に収まり、1頭でも物理的に無理がありません。",
     "<b>同時刻に遠く離れた2か所</b>で目撃された組み合わせは1つもありません。北部→南西→中央南の3エリアは時間的に重ならず順番に出現しており、これは1頭が移動していった足跡と一致します。",
     "行動リズムが典型的なツキノワグマです。移動は夕方・夜・明け方に集中し、日中は2回の長い休息（6/7昼に約10.5時間、6/8昼に約14.5時間ほぼ静止）を挟んでいます。",
@@ -306,7 +263,7 @@ document.getElementById("hypoSeg").addEventListener("click",e=>{
   const b=e.target.closest("button"); if(!b)return;
   hypo=b.dataset.h;
   [...document.querySelectorAll("#hypoSeg button")].forEach(x=>x.classList.toggle("on",x.dataset.h===hypo));
-  draw(document.getElementById("timeline").value/100); renderLegend(); drawAdded();
+  draw(document.getElementById("timeline").value/100); renderLegend();
 });
 
 /* ===================== timeline animation ===================== */
@@ -343,81 +300,7 @@ document.getElementById("resetBtn").addEventListener("click",()=>{ stop(); tl.va
     <ol class="evi">${a.evidence.map(e=>`<li>${e}</li>`).join("")}</ol>
     <div class="tight"><b>最も判断が分かれる区間</b><br>${a.tightest}</div>
     <div class="caveat"><b>正直な留保（断定しないこと）</b><ul class="ulist" style="margin:4px 0">${a.caveats.map(c=>`<li>${c}</li>`).join("")}</ul></div>`;
-  document.getElementById("safetyNote").innerHTML=a.safety;
 })();
-
-/* ===================== add-sighting tool (localStorage) ===================== */
-const LS_ADD="utsuBear_added_v2";
-let picking=false;
-const userLayer=L.layerGroup().addTo(map);
-function loadAdded(){ try{return JSON.parse(localStorage.getItem(LS_ADD))||[]}catch(e){return[]} }
-function saveAdded(a){ localStorage.setItem(LS_ADD,JSON.stringify(a)); }
-
-map.on("click",e=>{
-  if(!picking)return;
-  document.getElementById("nLat").value=e.latlng.lat.toFixed(5);
-  document.getElementById("nLon").value=e.latlng.lng.toFixed(5);
-  picking=false; document.getElementById("pickBtn").textContent="📍 地図で位置を選ぶ";
-});
-document.getElementById("pickBtn").addEventListener("click",()=>{
-  picking=!picking;
-  document.getElementById("pickBtn").textContent=picking?"地図をクリックしてください…":"📍 地図で位置を選ぶ";
-});
-
-// 全目撃（公式＋追加）から、新地点の前後の時刻近接点への必要速度と、同時刻矛盾を評価
-function evalNew(lat,lon,t){
-  const all=SIGHTINGS.map(s=>({lat:s.lat,lon:s.lon,t:s.t,label:"#"+s.id}))
-    .concat(loadAdded().filter(x=>x.t!==t).map((x,i)=>({lat:x.lat,lon:x.lon,t:x.t,label:"追加+"+(i+1)})));
-  // 直前・直後
-  let prev=null,next=null;
-  all.forEach(s=>{ if(s.t<=t&&(!prev||s.t>prev.t))prev=s; if(s.t>=t&&(!next||s.t<next.t))next=s; });
-  function spd(s){ if(!s)return null; const h=Math.abs(t-s.t)/3600000; const km=haversine(lat,lon,s.lat,s.lon)/1000; return {km,h,v:h<=0.001?(km>0.05?Infinity:0):km/h,ref:s}; }
-  const sp=spd(prev), sn=spd(next);
-  // 同時刻矛盾：±60分以内に、必要速度がBEARRUSH超の遠隔点があれば「別個体」
-  let conflict=null;
-  all.forEach(s=>{ const h=Math.abs(t-s.t)/3600000; if(h>0&&h<=1){ const km=haversine(lat,lon,s.lat,s.lon)/1000; const v=km/h; if(v>BEARRUSHKMH&&(!conflict||v>conflict.v))conflict={v,km,h,ref:s}; }});
-  const reqs=[sp,sn].filter(Boolean).map(x=>x.v);
-  const maxReq=reqs.length?Math.max(...reqs.filter(isFinite).concat(reqs.includes(Infinity)?[Infinity]:[])):0;
-  return {sp,sn,conflict,maxReq};
-}
-function renderAddResult(lat,lon,t){
-  const r=evalNew(lat,lon,t), res=document.getElementById("addResult");
-  let cls,msg;
-  if(r.conflict){ cls="new"; msg=`<b>⚠ 別の個体（複数頭）の可能性が高い。</b> ${fmtDT(r.conflict.ref.t)}の目撃(${r.conflict.ref.label})と<b>約${Math.round(r.conflict.h*60)}分差で約${r.conflict.km.toFixed(1)}km離れており</b>、1頭では到達不能（必要時速 約${r.conflict.v.toFixed(0)}km）。市へ通報を。`; }
-  else if(r.maxReq<=BEARMAXKMH){ cls="ok"; msg=`<b>既知のクマの動きで説明できます。</b> 直前/直後の目撃から必要時速は最大 約${r.maxReq.toFixed(1)}km で、通常の移動範囲内。同一個体の経路と整合します。`; }
-  else if(r.maxReq<=BEARRUSHKMH){ cls="maybe"; msg=`<b>急いで移動すれば同一個体でも可能</b>（必要時速 約${r.maxReq.toFixed(1)}km）。別個体の可能性も残ります。`; }
-  else { cls="new"; msg=`<b>⚠ 既知の経路から到達困難（必要時速 約${(isFinite(r.maxReq)?r.maxReq.toFixed(0):"∞")}km）。新しい個体の可能性。</b>市へ通報を。`; }
-  const det=[r.sp?`直前${r.sp.ref.label}: ${isFinite(r.sp.v)?r.sp.v.toFixed(1):"∞"}km/h`:null, r.sn?`直後${r.sn.ref.label}: ${isFinite(r.sn.v)?r.sn.v.toFixed(1):"∞"}km/h`:null].filter(Boolean).join(" ／ ");
-  res.className="result show "+cls;
-  res.innerHTML=`${msg}<div class="kv" style="margin-top:6px">${det}</div>`;
-  return cls;
-}
-document.getElementById("addBtn").addEventListener("click",()=>{
-  const d=document.getElementById("nDate").value, tm=document.getElementById("nTime").value;
-  const lat=parseFloat(document.getElementById("nLat").value), lon=parseFloat(document.getElementById("nLon").value);
-  const note=document.getElementById("nNote").value.trim();
-  if(!d||!tm){alert("日付と時刻を入力してください。");return;}
-  if(isNaN(lat)||isNaN(lon)){alert("位置（緯度・経度）を入力するか、地図をクリックして指定してください。");return;}
-  const t=parseDT(d+" "+tm);
-  const cls=renderAddResult(lat,lon,t);
-  const a=loadAdded(); a.push({dt:d+" "+tm,note,lat,lon,t,cls}); saveAdded(a); drawAdded();
-});
-function drawAdded(){
-  userLayer.clearLayers();
-  const a=loadAdded().sort((x,y)=>x.t-y.t);
-  const box=document.getElementById("addedList"); box.innerHTML="";
-  a.forEach((s,i)=>{
-    L.marker([s.lat,s.lon],{icon:L.divIcon({className:"",html:`<div class="badge-num" style="background:#7b2ff7;border-style:dashed">+${i+1}</div>`,iconSize:[24,24],iconAnchor:[12,12]})})
-      .bindPopup(`<div class="pop-t">追加目撃 +${i+1}</div>${fmtDT(s.t)}<br>${s.note||""}<br><span class="kv">${s.cls==="new"?"別個体の可能性":s.cls==="maybe"?"同一個体なら急移動":"既知の動きと整合"}</span>`).addTo(userLayer);
-    const row=document.createElement("div"); row.className="added";
-    const lab=s.cls==="new"?"／別個体?":s.cls==="maybe"?"／要確認":"／整合";
-    row.innerHTML=`<span><b>+${i+1}</b> ${fmtDT(s.t)} ${s.note||""} <small>${lab}</small></span>`;
-    const del=document.createElement("button"); del.className="delx"; del.textContent="削除";
-    del.onclick=()=>{ const arr=loadAdded(); arr.splice(i,1); saveAdded(arr); drawAdded(); };
-    row.appendChild(del); box.appendChild(row);
-  });
-}
-drawAdded();
 
 document.getElementById("genstamp").textContent="（生成：2026-06-08）";
 </script>

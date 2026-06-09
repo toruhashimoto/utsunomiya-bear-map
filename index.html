@@ -48,6 +48,10 @@
   .dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid #fff;box-shadow:0 0 0 1px #888}
   .badge-num{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;
     color:#fff;font-weight:700;font-size:.72rem;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .badge-cap{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;
+    background:#b00020;color:#fff;font-weight:800;font-size:.82rem;border:3px solid #fff;
+    box-shadow:0 0 0 3px rgba(176,0,32,.35),0 2px 6px rgba(0,0,0,.5)}
+  .capbar{background:#b00020;color:#fff;border-radius:10px;padding:10px 12px;font-size:.9rem;margin:0 0 12px;font-weight:600}
   .verdict{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 6px}
   .vb{font-weight:800;font-size:.78rem;padding:3px 10px;border-radius:999px;color:#fff;background:var(--one)}
   .prob{display:flex;height:26px;border-radius:8px;overflow:hidden;border:1px solid var(--line);margin:6px 0 4px;font-size:.72rem}
@@ -91,10 +95,11 @@
 <body>
 <header class="app">
   <h1>🧭 宇都宮 クマ出没 <span style="color:#bfe6d8">推論マップ</span> <span style="font-weight:400;font-size:.62em;opacity:.85">/ 目撃データの時空間分析</span></h1>
-  <div class="sub"><span class="ribbon">注意</span>市・報道・目撃情報（令和8年6月8日時点・計16地点）から、時刻と位置で<b>「クマは何頭か」を推定</b>。<b>1頭⇄2頭</b>の見比べ・タイムライン再生つき。市民作成の<b>非公式</b>分析ツールです。</div>
+  <div class="sub"><span class="ribbon">注意</span>市・報道の目撃情報（令和8年6月9日時点・目撃23件＋捕獲1）から、時刻と位置で<b>「クマは何頭か」を推定</b>。<b>1頭⇄2頭</b>の見比べ・タイムライン再生つき。市民作成の<b>非公式</b>分析ツールです。</div>
 </header>
 
 <div class="wrap">
+  <div class="capbar">🎯 <b>6月9日 15:45、東簗瀬1丁目でクマ1頭を捕獲</b>（市発表）。一連の出没はこの個体の連続移動とみられます。ただし市・県警は<b>「2頭目」の可能性を警戒中</b>。引き続き最新情報の確認を。</div>
   <div class="disc">
     ⚠️ <b>これは公式情報ではありません。</b>宇都宮市が公開する目撃情報をもとに、一市民が時刻・位置を分析・可視化したものです。
     最新・正確な情報は必ず <a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市公式サイト</a> をご確認ください。
@@ -129,10 +134,10 @@
   </div>
 
   <div class="foot">
-    データ出典：<a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市「クマの出没にご注意ください」</a>（令和8年6月8日時点、市13件）＋<a href="https://www.shimotsuke.co.jp/articles/-/1361127" target="_blank" rel="noopener">下野新聞</a>（2件：オリオン通り、栃木銀行陽南支店付近）＋X個人投稿（1件：川田町・下栗大塚通り付近、写真あり・未検証）＝計16地点。
+    データ出典：<a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市「クマの出没にご注意ください」</a>（令和8年6月9日時点、市公表20件＋6/9 15:45捕獲）＋<a href="https://www.shimotsuke.co.jp/articles/-/1361127" target="_blank" rel="noopener">下野新聞</a>＋X個人投稿（オリオン通り・栃木銀行陽南支店付近・川田町下栗大塚通り、一部未検証）＝地図上は計24地点（うち捕獲1）。
     地図：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a> / © OpenStreetMap contributors。
     座標は目撃地点の推定値（ランドマーク＋記載方向・距離から算出）であり誤差を含みます。SNS投稿は未検証情報を含みます。<br>
-    本ツールは市民による非公式の分析・可視化です。分析手法：全16地点を時系列で結び、各区間の所要時間と距離からクマの移動可能速度（小走り約8〜10km/h）を超えるか、同時刻に離れた2地点の矛盾がないかを多角的に検証。<span id="genstamp"></span>
+    本ツールは市民による非公式の分析・可視化です。分析手法：全23地点を時系列で結び、各区間の所要時間と距離からクマの移動可能速度（小走り約8〜10km/h）を超えるか、同時刻に離れた2地点の矛盾がないかを多角的に検証。<span id="genstamp"></span>
   </div>
 </div>
 
@@ -160,13 +165,21 @@ const SIGHTINGS = [
   {id:14, dt:"2026-06-08 04:25", area:"陽南1丁目",        place:"陽南中学校から北東500m付近",          lat:36.5382, lon:139.8805, bear:"A"},
   {id:15, dt:"2026-06-08 18:55", area:"陽南2丁目",        place:"陽南中学校の東側",                    lat:36.5350, lon:139.8782, bear:"A"},
   {id:16, dt:"2026-06-08 20:00", area:"川田町",           place:"下栗大塚通り付近（目撃写真あり）",      lat:36.5302, lon:139.8925, bear:"A", src:"X(個人投稿)"},
+  {id:17, dt:"2026-06-09 02:17", area:"川田町",           place:"陽南中学校から東600m付近",            lat:36.5350, lon:139.8832, bear:"A"},
+  {id:18, dt:"2026-06-09 03:43", area:"簗瀬町",           place:"中央卸売市場から南東750m付近",        lat:36.5415, lon:139.8983, bear:"A"},
+  {id:19, dt:"2026-06-09 04:25", area:"城東1丁目",        place:"城東小学校から南西200m付近",          lat:36.5489, lon:139.9017, bear:"A"},
+  {id:20, dt:"2026-06-09 05:35", area:"峰町",             place:"宇都宮大学峰キャンパス付近",          lat:36.5485, lon:139.9131, bear:"A"},
+  {id:21, dt:"2026-06-09 06:01", area:"平松本町",         place:"宇都宮大学峰キャンパスから南西700m付近", lat:36.5445, lon:139.9080, bear:"A"},
+  {id:22, dt:"2026-06-09 13:00", area:"平松本町",         place:"横川東小学校から北700m付近",          lat:36.5393, lon:139.9068, bear:"A"},
+  {id:23, dt:"2026-06-09 13:35", area:"下栗1丁目",        place:"横川東小学校から北西400m付近",        lat:36.5356, lon:139.9036, bear:"A"},
+  {id:24, dt:"2026-06-09 15:45", area:"東簗瀬1丁目",      place:"【捕獲】この地点でクマ1頭を捕獲",       lat:36.5416, lon:139.9004, bear:"A", cap:true},
 ];
 
 /* 推論結果（独立した4分析＋3反証＋統合の結論）。 */
 const ANALYSIS = {
-  headline: "計16地点の目撃は、1頭のクマが夜間に市内を移動した経路として最も無理なく説明できます。2頭の可能性も残りますが、複数頭を断定する決定的証拠（同時刻・遠隔の目撃や、母子が一緒に写った記録）はありません。",
-  prob: { one: 0.62, two: 0.33, threePlus: 0.05 },
-  oneBearNarr: "6/6夕方に市北部（富士見が丘・長岡）に現れ、上大曽→塙田（県立図書館）と南下。未明に中心市街地（オリオン通り）を抜けて明保野・大塚を通り、明け方に姿川・西川田へ。6/7の日中は姿川中付近で約10.5時間ほぼ静止して休息し、夜間に簗瀬へ移動、6/8は陽南で日中を過ごし、夜20時頃には川田町（東・鬼怒川方面）へ向かいました。総移動は約2日間で15km前後・概ね歩く速度の範囲で、1頭の行動圏（約22平方km）に収まります。",
+  headline: "計23件の目撃は1頭のクマの連続した移動として説明でき、その個体は6月9日15:45に東簗瀬1丁目で<b>捕獲</b>されました。これは『1頭』という推論の強い裏づけです。ただし市・県警は『2頭目』の可能性を警戒しており、別個体の存在は完全には否定できません。",
+  prob: { one: 0.88, two: 0.10, threePlus: 0.02 },
+  oneBearNarr: "6/6夕方に市北部（富士見が丘・長岡）に現れ、上大曽→塙田（県立図書館）と南下。未明に中心市街地（オリオン通り）を抜けて明保野・大塚を通り、明け方に姿川・西川田へ。6/7の日中は姿川中付近で約10.5時間ほぼ静止して休息し、夜間に簗瀬へ移動。6/8は陽南で日中を過ごし夜は川田町へ。6/9は未明から東へ回り込み、簗瀬→城東→宇都宮大学峰キャンパス→平松・横川・下栗と市の東側を移動し、<b>15:45に東簗瀬1丁目で捕獲</b>されました。全行程は約3日半・終始ほぼ歩く速度で、一貫して1頭の連続経路として説明できます。",
   bears: {
     A: { label:"北部・中央南回廊の個体", color:"#d7263d",
          narr:"富士見が丘から夜間に南下し、塙田・図書館付近を経て明保野・大塚へと市街地を縦断。その後6/8には簗瀬・陽南の中央南エリアに現れ、陽南中学校付近に滞在。移動はすべて夕方〜早朝の暗い時間帯に集中。" },
@@ -174,7 +187,8 @@ const ANALYSIS = {
          narr:"6/7の早朝から深夜まで、姿川中学校を中心とした半径約0.8kmの狭い範囲（西川田・姿川地区）に約18時間とどまり続けた。日中はほとんど動かず、身を潜めて休息・採食したとみられる定着型の動き。" }
   },
   evidence: [
-    "<b>報道・当局の見方とも一致</b>：下野新聞(6/8)によると当局は<b>同一個体（推定100kg超の成獣）の可能性が高い</b>とみており、市内の目撃は40件以上。本分析の『1頭が最有力』という結論と整合します。",
+    "<b>6/9 15:45、1頭が捕獲（東簗瀬1丁目）。</b> 捕獲個体は北部→中心→南→東と続く一連の目撃経路の終点にあたり、『観測された出没はほぼ1頭の連続移動だった』という推論を強く裏づけます。",
+    "<b>報道・当局の見方とも一致</b>：下野新聞によると当局は<b>同一個体（推定100kg超の成獣）の可能性が高い</b>とみており、市内の目撃は40件以上。本分析の『1頭が最有力』という結論と整合します。",
     "全13地点を時刻順につなぐと、どの区間も最速で<b>時速8.2km（明保野→大塚の7分間のみ）</b>、他はすべて時速2.5km以下。クマの通常の歩み・小走りの範囲に完全に収まり、1頭でも物理的に無理がありません。",
     "<b>同時刻に遠く離れた2か所</b>で目撃された組み合わせは1つもありません。北部→南西→中央南の3エリアは時間的に重ならず順番に出現しており、これは1頭が移動していった足跡と一致します。",
     "行動リズムが典型的なツキノワグマです。移動は夕方・夜・明け方に集中し、日中は2回の長い休息（6/7昼に約10.5時間、6/8昼に約14.5時間ほぼ静止）を挟んでいます。",
@@ -183,7 +197,8 @@ const ANALYSIS = {
   ],
   tightest: "全データ中で最も速い区間は 地点4(明保野 6/7 05:08) → 地点5(大塚 05:15)＝<b>0.95kmを7分＝時速8.2km</b>。クマの小走りの範囲内なので1頭でも超えられますが、これが唯一の『速い・直線的』な動きで、2頭説を唱えるならここが継ぎ目として指摘されます。",
   caveats: [
-    "点の目撃座標・時刻からは『1頭』と『母子・複数頭が一緒に移動』を区別できません。1頭と断定はできず、最も確からしい推定にとどまります。",
+    "市・県警は<b>『2頭目』の可能性を警戒</b>しており、別個体の存在は確認も否定もされていません。捕獲後も油断せず、最新情報の確認を。",
+    "点の目撃座標・時刻からは『1頭』と『母子・複数頭が一緒に移動』を区別できません。捕獲で1頭は確定しましたが、それ以外の個体の有無は別問題です。",
     "地点4→5の時速8.2kmは座標や時刻に多少の誤差があると変動します。それでもクマの走行速度の範囲内で、不可能ではありません。",
     "目撃の隙間（特に地点10→11の夜間移動 約3.8km）には別個体が隠れている可能性が原理的に常に残ります。",
     "確定には、複数個体が同一画面に写った映像、DNA・フンの鑑定、または同時刻の遠隔2地点での目撃のいずれかが必要です。"
@@ -212,7 +227,8 @@ gsiPale.addTo(map);
 L.control.layers({"地理院 淡色":gsiPale,"地理院 標準":gsiStd,"OpenStreetMap":osm},null,{position:"topright"}).addTo(map);
 
 let hypo="one"; // "one" | "two"
-function numIcon(s){ const c=hypo==="one"?"#0e7c66":(s.bear==="A"?ANALYSIS.bears.A.color:ANALYSIS.bears.B.color);
+function numIcon(s){ if(s.cap){ return L.divIcon({className:"",html:`<div class="badge-cap" title="捕獲">捕</div>`,iconSize:[30,30],iconAnchor:[15,15]}); }
+  const c=hypo==="one"?"#0e7c66":(s.bear==="A"?ANALYSIS.bears.A.color:ANALYSIS.bears.B.color);
   return L.divIcon({className:"",html:`<div class="badge-num" style="background:${c}">${s.id}</div>`,iconSize:[24,24],iconAnchor:[12,12]}); }
 
 let markerObjs=[], pathLayers=[];
@@ -236,7 +252,8 @@ function draw(frac){
     if(s.t>cut) return;
     const m=L.marker([s.lat,s.lon],{icon:numIcon(s)});
     const tag = hypo==="two" ? `<span class="tag" style="background:${s.bear==="A"?ANALYSIS.bears.A.color:ANALYSIS.bears.B.color}">クマ${s.bear}</span>` : "";
-    m.bindPopup(`<div class="pop-t">#${s.id}　${fmtDT(s.t)} ${tag}</div>${s.area}<br>${s.place}${s.src?` <span class="kv">／出典:${s.src}</span>`:""}<br><span class="kv">(${s.lat}, ${s.lon})</span>`);
+    const ptitle = s.cap ? `🎯 捕獲地点　${fmtDT(s.t)}` : `#${s.id}　${fmtDT(s.t)} ${tag}`;
+    m.bindPopup(`<div class="pop-t">${ptitle}</div>${s.area}<br>${s.place}${s.src?` <span class="kv">／出典:${s.src}</span>`:""}<br><span class="kv">(${s.lat}, ${s.lon})</span>`);
     m.addTo(map); markerObjs.push(m);
   });
   document.getElementById("clock").textContent = frac>=1 ? "全期間を表示" : "〜 "+fmtDT(cut);
@@ -304,7 +321,7 @@ document.getElementById("resetBtn").addEventListener("click",()=>{ stop(); tl.va
     <div class="caveat"><b>正直な留保（断定しないこと）</b><ul class="ulist" style="margin:4px 0">${a.caveats.map(c=>`<li>${c}</li>`).join("")}</ul></div>`;
 })();
 
-document.getElementById("genstamp").textContent="（最終更新：2026-06-08 23:16 JST）";
+document.getElementById("genstamp").textContent="（最終更新：2026-06-09 22:30 JST／6/9の目撃7件と捕獲を反映）";
 </script>
 </body>
 </html>

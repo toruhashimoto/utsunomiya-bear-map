@@ -51,11 +51,12 @@
   .badge-cap{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;
     background:#b00020;color:#fff;font-weight:800;font-size:.82rem;border:3px solid #fff;
     box-shadow:0 0 0 3px rgba(176,0,32,.35),0 2px 6px rgba(0,0,0,.5)}
-  .capbar{background:#b00020;color:#fff;border-radius:10px;padding:10px 12px;font-size:.9rem;margin:0 0 12px;font-weight:600}
+  .capbar{background:#b8860b;color:#fff;border-radius:10px;padding:10px 12px;font-size:.9rem;margin:0 0 12px;font-weight:600}
   .badge-multi{box-shadow:0 0 0 3px #e8590c,0 1px 4px rgba(0,0,0,.5)!important}
   .verdict{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 6px}
   .vb{font-weight:800;font-size:.78rem;padding:3px 10px;border-radius:999px;color:#fff;background:var(--one)}
   .vb.vb-red{background:#b00020}
+  .vb.vb-amber{background:#b8860b}
   .statusrow{font-size:.83rem;margin:2px 0 6px;color:#7a1020}
   .corr{background:#fff3f3;border:1px solid #f3c9c9;border-radius:10px;padding:9px;font-size:.84rem;margin:6px 0}
   .watch{background:#fef6ee;border:1px solid #f0d9bf;border-radius:10px;padding:9px;margin:8px 0}
@@ -100,15 +101,15 @@
 <body>
 <header class="app">
   <h1>🧭 宇都宮 クマ出没 <span style="color:#bfe6d8">推論マップ</span> <span style="font-weight:400;font-size:.62em;opacity:.85">/ 目撃データの時空間分析</span></h1>
-  <div class="sub"><span class="ribbon">注意</span>市・報道・警察発表（令和8年6月9日時点・目撃23地点＋捕獲1）をもとに時刻と位置からクマの行動を可視化。<b>警察発表で2頭以上を確認</b>、2頭目を警戒中。市民作成の<b>非公式</b>分析ツールです。</div>
+  <div class="sub"><span class="ribbon">注意</span>市・報道・警察発表（令和8年6月10日時点・目撃23地点＋捕獲1）をもとに時刻と位置からクマの行動を可視化。<b>6/9に1頭捕獲・6/11休校解除</b>（当局は1頭の可能性が高いと判断）。市民作成の<b>非公式</b>分析ツールです。</div>
 </header>
 
 <div class="wrap">
-  <div class="capbar">🔴 <b>市内に少なくとも2頭。</b> 6/9 15:45 東簗瀬で1頭を捕獲、しかし<b>警察発表で平松本町に2頭</b>＝2頭目を確認。これを受け<b>6/10も全小中学校が休校</b>（下野新聞）。残る個体は<b>東部（平松・峰・鬼怒川沿い）</b>で特に警戒を。最新情報は宇都宮市・警察で確認してください。</div>
+  <div class="capbar">🟡 <b>最新（6/10）：捕獲後の新たな目撃なし。</b> 当局は<b>同一個体（1頭）の可能性が高い</b>とし、<b>6/11に休校解除</b>（下野新聞）。一時『2頭目』が警戒され6/8〜10は3日連続休校でしたが、追加目撃で裏づけられず。終息宣言ではないため、出没地域では当面ご注意を。最新は宇都宮市・警察で確認してください。</div>
   <div class="disc">
     ⚠️ <b>これは公式情報ではありません。</b>宇都宮市が公開する目撃情報をもとに、一市民が時刻・位置を分析・可視化したものです。
     最新・正確な情報は必ず <a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市公式サイト</a> をご確認ください。
-    クマは危険です。<b>小中学校は6月8日(月)〜10日(水)は休校</b>（2頭目を懸念）。屋外では十分にご注意ください。
+    クマは危険です。<b>小中学校は6月8日(月)〜10日(水)は休校、6月11日(木)から再開</b>。出没地域では引き続きご注意ください。
   </div>
 
   <div class="grid">
@@ -139,7 +140,7 @@
   </div>
 
   <div class="foot">
-    データ出典：<a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市「クマの出没にご注意ください」</a>（令和8年6月9日時点、市公表20件＋6/9 15:45捕獲）＋<b>警察発表（平松本町で2頭）</b>＋<a href="https://www.shimotsuke.co.jp/articles/-/1361127" target="_blank" rel="noopener">下野新聞</a>（6/10休校・2頭目懸念）＋X個人投稿（オリオン通り・栃木銀行陽南支店付近・川田町、一部未検証）＝地図上は計24地点（うち捕獲1）。
+    データ出典：<a href="https://www.city.utsunomiya.lg.jp/kurashi/oshiraselist/1034544/1025612.html" target="_blank" rel="noopener">宇都宮市「クマの出没にご注意ください」</a>（令和8年6月9日時点、市公表20件＋6/9 15:45捕獲）＋警察発表（平松本町で一時2頭の情報）＋<a href="https://www.shimotsuke.co.jp/articles/-/1361127" target="_blank" rel="noopener">下野新聞</a>（6/10：捕獲後の目撃なし／6/11休校解除・当局は同一個体と推測）＋X個人投稿（オリオン通り・栃木銀行陽南支店付近・川田町、一部未検証）＝地図上は計24地点（うち捕獲1）。
     地図：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a> / © OpenStreetMap contributors。
     座標は目撃地点の推定値（ランドマーク＋記載方向・距離から算出）であり誤差を含みます。SNS投稿は未検証情報を含みます。<br>
     本ツールは市民による非公式の分析・可視化です。分析手法：全23地点を時系列で結び、各区間の所要時間と距離からクマの移動可能速度（小走り約8〜10km/h）を超えるか、同時刻に離れた2地点の矛盾がないかを多角的に検証。<span id="genstamp"></span>
@@ -174,17 +175,17 @@ const SIGHTINGS = [
   {id:18, dt:"2026-06-09 03:43", area:"簗瀬町",           place:"中央卸売市場から南東750m付近",        lat:36.5415, lon:139.8983, bear:"A"},
   {id:19, dt:"2026-06-09 04:25", area:"城東1丁目",        place:"城東小学校から南西200m付近",          lat:36.5489, lon:139.9017, bear:"A"},
   {id:20, dt:"2026-06-09 05:35", area:"峰町",             place:"宇都宮大学峰キャンパス付近",          lat:36.5485, lon:139.9131, bear:"A"},
-  {id:21, dt:"2026-06-09 06:01", area:"平松本町",         place:"宇都宮大学峰キャンパスから南西700m付近", lat:36.5445, lon:139.9080, bear:"A", multi:true, note:"⚠️ 警察発表：平松本町エリアで2頭（複数個体）を確認"},
-  {id:22, dt:"2026-06-09 13:00", area:"平松本町",         place:"横川東小学校から北700m付近",          lat:36.5393, lon:139.9068, bear:"B", multi:true, note:"⚠️ 警察発表：平松本町エリアで2頭（複数個体）を確認"},
+  {id:21, dt:"2026-06-09 06:01", area:"平松本町",         place:"宇都宮大学峰キャンパスから南西700m付近", lat:36.5445, lon:139.9080, bear:"A", multi:true, note:"警察発表で一時『平松本町に2頭』の情報（後に同一個体の可能性が高いと判断）"},
+  {id:22, dt:"2026-06-09 13:00", area:"平松本町",         place:"横川東小学校から北700m付近",          lat:36.5393, lon:139.9068, bear:"B", multi:true, note:"警察発表で一時『平松本町に2頭』の情報（後に同一個体の可能性が高いと判断）"},
   {id:23, dt:"2026-06-09 13:35", area:"下栗1丁目",        place:"横川東小学校から北西400m付近",        lat:36.5356, lon:139.9036, bear:"A"},
   {id:24, dt:"2026-06-09 15:45", area:"東簗瀬1丁目",      place:"【捕獲】この地点でクマ1頭を捕獲",       lat:36.5416, lon:139.9004, bear:"A", cap:true},
 ];
 
 /* 推論結果（独立した4分析＋3反証＋統合の結論）。 */
 const ANALYSIS = {
-  confirmed: "市内に2頭以上（警察発表）",
-  headline: "<b>市内に少なくとも2頭のクマがいることが確認されました。</b>警察発表で平松本町に2頭、その2頭目の目撃を受け<b>6/10も全小中学校が休校</b>（下野新聞）。1頭は6/9 15:45に東簗瀬1丁目で捕獲済み、残り1頭以上は依然警戒中です。当初この目撃群は『1頭の連続移動』として最も無理なく説明できましたが、“矛盾が無い”ことは“1頭である証明”ではなく、直接の目撃（同所2頭）が複数頭を確定させました。",
-  correction: "当初このサイトは時空間分析から『1頭が最有力（約88%）』としていました。しかし“点の目撃が個々に到達可能”であることは“1頭である”ことの証明にはなりません。警察の直接目撃（平松本町で2頭）という決定的証拠により、結論を『2頭以上』に訂正します。2頭目を警戒してきた判断が正しかったことになります。",
+  confirmed: "1頭捕獲で収束へ（2頭目は確認されず／6/11休校解除）",
+  headline: "<b>6/9 15:45に1頭（体長約1m・体重約100kg・雄の成獣）を東簗瀬1丁目で捕獲。その後、捕獲以降の新たな目撃はなく（6/10 14時時点）、当局は『捕獲個体＝目撃個体と同一（＝1頭）の可能性が高い』と推測。これを受け6/11に全小中学校の臨時休校は解除されました。</b>一時は『2頭目』が警戒され6/8〜10は3日連続休校でしたが、追加の目撃で裏づけられず、見方は1頭に戻りました（最終確定ではありません）。",
+  correction: "頭数の見方は実際の発表に沿って動きました：①当初は時空間分析で『1頭が最有力』→ ②6/9に『平松本町で2頭』の情報を受け『2頭以上』に訂正 → ③その後の追加目撃がなく、当局は『同一個体（1頭）の可能性が高い』と判断し6/11休校解除。DNA等の最終確定ではありませんが、現時点の公式の見方は『1頭（捕獲済み）』に傾いています。当時の情報（同所2頭）から2頭目を警戒したこと自体は妥当でした。",
   prob: { one: 0.88, two: 0.10, threePlus: 0.02 },
   oneBearNarr: "捕獲された個体がたどったとみられる経路：6/6夕方に市北部（富士見が丘・長岡）に現れ、田川沿いに南下→中心市街地（オリオン通り）→明保野・大塚→姿川・西川田で約18時間滞在→簗瀬・陽南→6/9は東へ回り込み城東・宇都宮大学峰キャンパス・平松本町を経て、15:45に東簗瀬1丁目で捕獲。※平松本町など一部の地点は2頭目と重なっている可能性があり、どの目撃がどちらの個体かは確定できません。",
   bears: {
@@ -194,19 +195,19 @@ const ANALYSIS = {
          narr:"6/7の早朝から深夜まで、姿川中学校を中心とした半径約0.8kmの狭い範囲（西川田・姿川地区）に約18時間とどまり続けた。日中はほとんど動かず、身を潜めて休息・採食したとみられる定着型の動き。" }
   },
   evidence: [
-    "<b>警察発表：平松本町で2頭。</b> 同じエリアで複数個体が確認されたことは『同所に2頭』という最も直接的な複数頭の証拠で、これにより市内に少なくとも2頭がいることが確定しました。",
-    "<b>6/10も全小中学校が臨時休校（下野新聞）。</b>『クマ2頭目を懸念』が理由として報じられています。1頭の捕獲では事態は終息していません。",
-    "<b>6/9 15:45、1頭を捕獲（東簗瀬1丁目）。</b> 捕獲個体は北部→中心→南→東と続く連続経路の終点。観測の多くはこの個体で説明できますが、すべてではありません。",
-    "（参考・当初の推論）全地点が徒歩〜小走りの速度で連続し、同時刻・遠隔の矛盾がゼロだったため、時空間的には『1頭』が最も無理なく見えていました。しかし“矛盾が無い”ことは“1頭である”ことの証明ではなく、上記の直接目撃がこれを覆しました。"
+    "<b>捕獲(6/9 15:45)以降、新たな目撃なし（6/10 14時時点）。</b> 当局は捕獲個体と目撃個体は同一（＝1頭）の可能性が高いと推測し、6/11に休校を解除しました。",
+    "<b>捕獲個体</b>：体長約1m・体重約100kgのツキノワグマの雄の成獣（麻酔銃で捕獲、東簗瀬の民家軒下）。",
+    "<b>『2頭目』の経緯</b>：6/9に平松本町で2頭との情報があり6/8〜10は3日連続休校。しかし捕獲後に追加の目撃がなく、複数頭の可能性は低いと判断されました（断定ではありません）。",
+    "（参考・時空間分析）全目撃地点は徒歩〜小走りの速度で連続し、同時刻・遠隔の矛盾はゼロでした。これは『1頭の連続移動』と整合し、当局の現在の見方とも一致します。"
   ],
   watchZones: [
     {rank:1, name:"鬼怒川沿いの東縁（東簗瀬〜平松・峰・平出・岡本方面の河川敷・河畔林）", why:"2頭目の最終確認は東部（平松本町）。鬼怒川は最大の連続した水辺回廊で、川沿いを移動されると市街地の目撃網にかかりにくい。最優先。", signs:"夜明け前・夕暮れに河川敷から畑・住宅へ出る目撃／橋周辺の足跡・フン／河畔林のなぎ倒し。平出工業団地周辺の遭遇注意。"},
     {rank:2, name:"北西〜北部の山際と田川の進入路（古賀志山・篠井・羽黒山の山麓〜富士見が丘・長岡・上大曽）", why:"1頭目が森から街へ入った『扉』。同じ北西の山から別個体が下りてくる入口。山際で早く気づければ時間的余裕が生まれる。", signs:"山際・沢沿いの目撃／果樹・家庭菜園・生ゴミ荒らし／田川土手の足跡・フン。"},
     {rank:3, name:"姿川沿いの南西部（西川田・姿川中周辺〜鶴田・雀宮方面）", why:"水・藪・農地がそろう良い隠れ場/餌場。ただし捜索で人の気配が残るため優先度は一段下。下流（鶴田沼・雀宮）は未利用で空き。", signs:"姿川の橋・河畔の藪での目撃／川岸の足跡・フン／竹林・ヨシ原の昼間の潜伏。"}
   ],
-  watchNote: "これは『捕獲個体の行動＋ツキノワグマの生態』からの“情報に基づく推論”で、2頭目の居場所の特定ではありません。確実に言えるのは、6/9 15:45の捕獲以降に新たな目撃が出れば、それは定義上『別個体（2頭目）』だということです。",
+  watchNote: "※当局は現在『1頭（捕獲済み）の可能性が高い』としており、以下はあくまで“万一2頭目がいた場合”の備えです。これは捕獲個体の行動＋ツキノワグマの生態からの推論で、居場所の特定ではありません。なお6/9 15:45の捕獲以降に新たな目撃が出れば、それは定義上『別個体』になります。",
   caveats: [
-    "<b>2頭目は依然警戒中。</b> 捕獲は1頭のみで事態は終息していません（6/10も休校）。最新情報は必ず宇都宮市・警察でご確認を。",
+    "<b>『終息宣言』ではありません。</b> 6/11に休校解除・当局は1頭の可能性が高いとの見方ですが、一時は複数頭の可能性も報じられました。出没のあった地域では当面の注意を。最新は宇都宮市・警察で確認を。",
     "どの目撃がどちらの個体かは確定できません。地図の番号・経路は主に『捕獲個体の連続移動』を示しており、2頭目の軌跡は別にあり得ます。",
     "座標は『○○から南300m』等とランドマークからの推定値で、数十〜数百mの誤差を含みます。SNS投稿は未検証情報を含みます。",
     "頭数の最終確定には、複数個体の同時撮影・DNA/フン鑑定・同時刻の遠隔/同所目撃などが必要です（平松本町の同所2頭はその一つに該当します）。"
@@ -309,11 +310,11 @@ document.getElementById("resetBtn").addEventListener("click",()=>{ stop(); tl.va
   const a=ANALYSIS;
   const zones=a.watchZones.map(z=>`<li><b>第${z.rank}：${z.name}</b><br><span class="kv">理由：</span>${z.why}<br><span class="kv">兆候：</span>${z.signs}</li>`).join("");
   document.getElementById("analysisBody").innerHTML=`
-    <div class="verdict"><span class="vb vb-red">🔴 確認：${a.confirmed}</span></div>
-    <div class="statusrow"><b>捕獲 1頭</b>（6/9 15:45 東簗瀬）　／　<b>逃走中 1頭以上</b>（警戒）　／　<b>6/10 全小中学校 休校</b></div>
+    <div class="verdict"><span class="vb vb-amber">🟡 現状：${a.confirmed}</span></div>
+    <div class="statusrow"><b>捕獲 1頭</b>（6/9 15:45 東簗瀬）　／　<b>捕獲後の目撃なし</b>（6/10 14時時点）　／　<b>6/11 休校解除</b></div>
     <p style="margin:6px 0 8px">${a.headline}</p>
     <div class="corr"><b>⚠ 推論の訂正</b><br>${a.correction}</div>
-    <div class="watch"><b>🐻 2頭目の警戒エリア（優先順）</b><ol class="evi" style="margin-top:4px">${zones}</ol><p class="hint" style="margin:4px 0 0">${a.watchNote}</p></div>
+    <div class="watch"><b>🐻（念のため）万一2頭目がいた場合の警戒エリア</b><ol class="evi" style="margin-top:4px">${zones}</ol><p class="hint" style="margin:4px 0 0">${a.watchNote}</p></div>
     <div class="kv" style="margin-top:10px">根拠</div>
     <ol class="evi">${a.evidence.map(e=>`<li>${e}</li>`).join("")}</ol>
     <div class="kv" style="margin-top:8px">捕獲された個体の経路（推定）</div>
@@ -327,7 +328,7 @@ document.getElementById("resetBtn").addEventListener("click",()=>{ stop(); tl.va
     <div class="caveat"><b>正直な留保</b><ul class="ulist" style="margin:4px 0">${a.caveats.map(c=>`<li>${c}</li>`).join("")}</ul></div>`;
 })();
 
-document.getElementById("genstamp").textContent="（最終更新：2026-06-09 23:00 JST／警察発表の2頭確認・6/10休校・2頭目の警戒エリアを反映）";
+document.getElementById("genstamp").textContent="（最終更新：2026-06-10 21:30 JST／捕獲後の目撃なし・6/11休校解除・当局は1頭の見方を反映）";
 </script>
 </body>
 </html>
